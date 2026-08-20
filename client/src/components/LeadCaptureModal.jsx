@@ -22,25 +22,29 @@ const LeadCaptureModal = () => {
 
   const { showToast } = useNotification();
 
-  // Trigger popup 5-10 seconds after user enters the website and re-trigger if closed
+  // Trigger popup after entering website, ONLY IF student has NOT submitted yet
   useEffect(() => {
-    // Initial trigger after 4 seconds
-    const initialTimer = setTimeout(() => {
-      setIsOpen(true);
+    const isSubmitted = localStorage.getItem('cd_lead_submitted') || sessionStorage.getItem('cd_lead_submitted');
+    if (isSubmitted) {
+      setSubmitted(true);
+      return; // Never show popup if already submitted
+    }
+
+    const timer = setTimeout(() => {
+      const checkAgain = localStorage.getItem('cd_lead_submitted') || sessionStorage.getItem('cd_lead_submitted');
+      if (!checkAgain) {
+        setIsOpen(true);
+      }
     }, 4000);
 
-    return () => clearTimeout(initialTimer);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
     setIsOpen(false);
-    // Re-prompt after 12 seconds if closed without submitting
-    if (!submitted) {
-      setTimeout(() => {
-        setIsOpen(true);
-      }, 12000);
-    }
+    sessionStorage.setItem('cd_lead_dismissed', 'true');
   };
+
 
 
   const handleSubmit = async (e) => {
@@ -77,6 +81,7 @@ const LeadCaptureModal = () => {
       existingLeads.push(leadPayload);
       localStorage.setItem('cd_captured_leads', JSON.stringify(existingLeads));
       localStorage.setItem('cd_lead_submitted', 'true');
+      sessionStorage.setItem('cd_lead_submitted', 'true');
 
       // 3. Trigger FormSubmit / Cloud notification fallback to coursedivine@gmail.com
       if (typeof window !== 'undefined') {
@@ -116,8 +121,8 @@ const LeadCaptureModal = () => {
 
   return (
     <>
-      {/* Floating Quick-Open Counseling Pill when modal is closed */}
-      {!isOpen && (
+      {/* Floating Quick-Open Counseling Pill ONLY when NOT submitted */}
+      {!isOpen && !submitted && (
         <button
           onClick={() => setIsOpen(true)}
           className="fixed bottom-6 left-6 z-[9000] flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-gradient-to-r from-[#6B21A8] via-[#7E22CE] to-[#0F62FE] text-white shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/40 group animate-bounce"
@@ -131,6 +136,7 @@ const LeadCaptureModal = () => {
           </span>
         </button>
       )}
+
 
       {/* Main 10-Second Lead Capture Popup */}
       {isOpen && (
