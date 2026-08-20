@@ -45,9 +45,9 @@ const CourseDetails = () => {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Curriculum & Course Handout Lock State
+  // Curriculum & Course Handout Lock State (Locked by default until student submits basic details)
   const [isUnlocked, setIsUnlocked] = useState(() => {
-    return !!(localStorage.getItem('cd_syllabus_unlocked') || localStorage.getItem('cd_lead_submitted'));
+    return localStorage.getItem('cd_handout_unlocked') === 'true';
   });
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [unlockForm, setUnlockForm] = useState({
@@ -57,6 +57,7 @@ const CourseDetails = () => {
     phone: ''
   });
   const [isSubmittingUnlock, setIsSubmittingUnlock] = useState(false);
+
 
 
   useEffect(() => {
@@ -208,10 +209,10 @@ Official Portal: https://akasheswar7.github.io/coursedivinewebsite/
       }).catch(() => null);
 
       // 2. Persist locally
-      localStorage.setItem('cd_syllabus_unlocked', 'true');
-      localStorage.setItem('cd_lead_submitted', 'true');
+      localStorage.setItem('cd_handout_unlocked', 'true');
       setIsUnlocked(true);
       setShowUnlockModal(false);
+
 
       confetti({
         particleCount: 140,
