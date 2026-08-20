@@ -1,0 +1,74 @@
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please provide your full name'],
+      trim: true,
+      maxlength: [100, 'Name cannot exceed 100 characters']
+    },
+    email: {
+      type: String,
+      required: [true, 'Please provide an email address'],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email']
+    },
+    phone: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide a password'],
+      minlength: [6, 'Password must be at least 6 characters'],
+      select: false
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin', 'instructor'],
+      default: 'user'
+    },
+    avatar: {
+      type: String,
+      default: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'
+    },
+    bio: {
+      type: String,
+      default: 'Lifelong learner at Course Divine.'
+    },
+    referralCode: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+    referredBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    isVerified: {
+      type: Boolean,
+      default: true
+    }
+  },
+  { timestamps: true }
+);
+
+// Hash password before saving
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+// Compare password method
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+module.exports = mongoose.model('User', userSchema);

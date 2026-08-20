@@ -1,0 +1,152 @@
+const mongoose = require('mongoose');
+
+const topicSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  duration: { type: String, default: '15 mins' },
+  isFreePreview: { type: Boolean, default: false },
+  videoUrl: { type: String, default: '' }
+});
+
+const moduleSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, default: '' },
+  duration: { type: String, default: '2 hours' },
+  topics: [topicSchema]
+});
+
+const reviewSchema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    name: { type: String, required: true },
+    avatar: { type: String, default: '' },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String, required: true }
+  },
+  { timestamps: true }
+);
+
+const faqSchema = new mongoose.Schema({
+  question: { type: String, required: true },
+  answer: { type: String, required: true }
+});
+
+const courseSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: [true, 'Course title is required'],
+      trim: true,
+      maxlength: [200, 'Title cannot exceed 200 characters']
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true
+    },
+    subtitle: {
+      type: String,
+      default: ''
+    },
+    description: {
+      type: String,
+      required: [true, 'Course description is required']
+    },
+    overview: {
+      type: String,
+      default: ''
+    },
+    category: {
+      type: String,
+      required: [true, 'Category is required'],
+      trim: true
+    },
+    thumbnail: {
+      type: String,
+      default: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80'
+    },
+    banner: {
+      type: String,
+      default: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80'
+    },
+    previewVideo: {
+      type: String,
+      default: ''
+    },
+    level: {
+      type: String,
+      enum: ['Beginner', 'Intermediate', 'Advanced', 'All Levels'],
+      default: 'Beginner'
+    },
+    language: {
+      type: String,
+      default: 'English / Hindi'
+    },
+    duration: {
+      type: String,
+      required: true,
+      default: '40 Hours'
+    },
+    totalLectures: {
+      type: Number,
+      default: 45
+    },
+    price: {
+      type: Number,
+      required: true,
+      default: 4999
+    },
+    discountPrice: {
+      type: Number,
+      default: 2499
+    },
+    rating: {
+      type: Number,
+      default: 4.8,
+      min: 0,
+      max: 5
+    },
+    numReviews: {
+      type: Number,
+      default: 120
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false
+    },
+    isPopular: {
+      type: Boolean,
+      default: true
+    },
+    isPublished: {
+      type: Boolean,
+      default: true
+    },
+    instructor: {
+      name: { type: String, default: 'Course Divine Senior Mentor' },
+      title: { type: String, default: 'Lead Industry Architect' },
+      bio: { type: String, default: '10+ years of enterprise experience building scalable architectures.' },
+      avatar: { type: String, default: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' }
+    },
+    highlights: [{ type: String }],
+    prerequisites: [{ type: String }],
+    learningOutcomes: [{ type: String }],
+    curriculum: [moduleSchema],
+    faqs: [faqSchema],
+    reviews: [reviewSchema],
+    enrolledCount: {
+      type: Number,
+      default: 350
+    },
+    certificateAvailable: {
+      type: Boolean,
+      default: true
+    }
+  },
+  { timestamps: true }
+);
+
+// Indexes for fast searching
+courseSchema.index({ title: 'text', description: 'text', category: 'text' });
+
+module.exports = mongoose.model('Course', courseSchema);
