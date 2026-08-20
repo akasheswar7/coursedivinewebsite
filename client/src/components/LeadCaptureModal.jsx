@@ -19,22 +19,26 @@ const LeadCaptureModal = () => {
 
   const { showToast } = useNotification();
 
-  // Trigger popup 10 seconds after user enters the website
+  // Trigger popup 5-10 seconds after user enters the website and re-trigger if closed
   useEffect(() => {
-    // Check if user already submitted in this session
-    const hasSubmitted = localStorage.getItem('cd_lead_submitted');
-    if (hasSubmitted) return;
-
-    const timer = setTimeout(() => {
+    // Initial trigger after 4 seconds
+    const initialTimer = setTimeout(() => {
       setIsOpen(true);
-    }, 10000); // 10 seconds delay
+    }, 4000);
 
-    return () => clearTimeout(timer);
+    return () => clearTimeout(initialTimer);
   }, []);
 
   const handleClose = () => {
     setIsOpen(false);
+    // Re-prompt after 12 seconds if closed without submitting
+    if (!submitted) {
+      setTimeout(() => {
+        setIsOpen(true);
+      }, 12000);
+    }
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,29 +111,47 @@ const LeadCaptureModal = () => {
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white rounded-3xl max-w-[360px] sm:max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden relative animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col justify-between">
-        
-        {/* Top Close Button */}
+    <>
+      {/* Floating Quick-Open Counseling Pill when modal is closed */}
+      {!isOpen && (
         <button
-          onClick={handleClose}
-          className="absolute top-3 right-3 p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition z-10"
-          aria-label="Close modal"
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 left-6 z-[9000] flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-gradient-to-r from-[#6B21A8] via-[#7E22CE] to-[#0F62FE] text-white shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/40 group animate-bounce"
+          aria-label="Book Free Counseling"
         >
-          <X className="w-4 h-4 sm:w-5 sm:h-5" />
+          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+            <Phone className="w-3.5 h-3.5 text-white" />
+          </div>
+          <span className="text-xs font-black tracking-wide pr-1">
+            Free Career Call 📞
+          </span>
         </button>
+      )}
 
-        <div className="overflow-y-auto p-4 sm:p-6 space-y-3">
-          {/* Modal Header with Course Divine Logo */}
-          <div className="text-center space-y-2">
-            <img
-              src="/logo.png"
-              alt="Course Divine"
-              className="h-8 sm:h-10 w-auto object-contain rounded-lg border border-slate-200 shadow-sm mx-auto"
-            />
+      {/* Main 10-Second Lead Capture Popup */}
+      {isOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl max-w-[360px] sm:max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden relative animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col justify-between">
+            
+            {/* Top Close Button */}
+            <button
+              onClick={handleClose}
+              className="absolute top-3 right-3 p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition z-10"
+              aria-label="Close modal"
+            >
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+
+            <div className="overflow-y-auto p-4 sm:p-6 space-y-3">
+              {/* Modal Header with Course Divine Logo */}
+              <div className="text-center space-y-2">
+                <img
+                  src="/logo.png"
+                  alt="Course Divine"
+                  className="h-8 sm:h-10 w-auto object-contain rounded-lg border border-slate-200 shadow-sm mx-auto"
+                />
+
 
             {/* Founder Avatar & Introduction */}
             <div className="flex flex-col items-center space-y-1.5 pt-1">
@@ -266,10 +288,12 @@ const LeadCaptureModal = () => {
           </div>
         </div>
 
-
       </div>
     </div>
+    )}
+  </>
   );
 };
+
 
 export default LeadCaptureModal;
