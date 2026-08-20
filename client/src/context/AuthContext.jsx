@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  // Strict Database Customer Login
   const login = async (email, password) => {
     const cleanEmail = email.trim().toLowerCase();
 
@@ -46,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user: userData };
       }
     } catch (error) {
-      // Check client database
+      // Check customer database in storage
     }
 
     // Check local database for registered customer accounts
@@ -70,34 +71,22 @@ export const AuthProvider = ({ children }) => {
 
     return {
       success: false,
-      message: 'No account found with this email. Please sign up first.'
+      message: 'No registered account found with this email. Please click "Sign up" to create an account first.'
     };
   };
 
-  // Google Direct One-Click Authentication & Per-User Isolation
+  // Strict Google Authentication - Requires existing registered user or formal registration
   const loginWithGoogle = async (googleProfile) => {
     try {
       const email = googleProfile.email.trim().toLowerCase();
-      const name = googleProfile.name?.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-      const avatar = googleProfile.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=071F3F&textColor=ffffff`;
-
       const db = JSON.parse(localStorage.getItem('cd_registered_users_db') || '[]');
-      let googleUser = db.find((u) => u.email.toLowerCase() === email);
+      const googleUser = db.find((u) => u.email.toLowerCase() === email);
 
       if (!googleUser) {
-        googleUser = {
-          _id: 'usr_' + Date.now(),
-          name,
-          email,
-          avatar,
-          role: email.includes('admin') ? 'admin' : 'user',
-          authProvider: 'google',
-          phone: googleProfile.phone || '',
-          registeredAt: new Date().toISOString(),
-          token: 'google_jwt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8)
+        return {
+          success: false,
+          message: `No account found for "${email}". Please click "Create Student Account" to register first.`
         };
-        db.push(googleUser);
-        localStorage.setItem('cd_registered_users_db', JSON.stringify(db));
       }
 
       setUser(googleUser);
@@ -106,9 +95,10 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, user: googleUser };
     } catch (err) {
-      return { success: false, message: 'Google authentication failed' };
+      return { success: false, message: 'Authentication verification failed' };
     }
   };
+
 
   const register = async (name, email, password, phone, referralCode) => {
     const cleanEmail = email.trim().toLowerCase();
