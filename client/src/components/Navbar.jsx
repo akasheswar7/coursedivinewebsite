@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import {
+  Search,
   GraduationCap,
   ShoppingCart,
   Menu,
@@ -33,6 +34,9 @@ const Navbar = () => {
   const [blogDropdownOpen, setBlogDropdownOpen] = useState(false);
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [mobileBlogOpen, setMobileBlogOpen] = useState(false);
+  const [navSearch, setNavSearch] = useState('');
+  const [showNavSearch, setShowNavSearch] = useState(false);
+
 
   // Close menus on route change
   useEffect(() => {
@@ -229,8 +233,39 @@ const Navbar = () => {
             </div>
           </nav>
 
-          {/* Right Section: Cart + User Profile / Login */}
-          <div className="flex items-center gap-3 shrink-0">
+          {/* Right Section: Search + Cart + User Profile / Login */}
+          <div className="flex items-center gap-2.5 shrink-0">
+
+            {/* Quick Search Form */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (navSearch.trim()) {
+                  navigate(`/courses?search=${encodeURIComponent(navSearch.trim())}`);
+                  setNavSearch('');
+                  setShowNavSearch(false);
+                }
+              }}
+              className="relative hidden sm:flex items-center"
+            >
+              <input
+                type="text"
+                value={navSearch}
+                onChange={(e) => setNavSearch(e.target.value)}
+                placeholder="Search courses..."
+                className="w-36 lg:w-44 focus:w-60 pl-8 pr-3 py-1.5 rounded-full bg-[#0C2A52] hover:bg-[#0E3260] focus:bg-white text-white focus:text-slate-900 placeholder:text-slate-400 text-xs border border-brand-400/20 focus:border-brand-500 transition-all duration-300 focus:outline-none"
+              />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 pointer-events-none" />
+              {navSearch && (
+                <button
+                  type="button"
+                  onClick={() => setNavSearch('')}
+                  className="absolute right-2 p-0.5 rounded-full text-slate-400 hover:text-slate-600"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </form>
 
             {/* Shopping Cart Button */}
             <Link
@@ -245,6 +280,7 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
+
 
             {/* User Dropdown / Login Button */}
             {isAuthenticated ? (

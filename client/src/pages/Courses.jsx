@@ -37,7 +37,38 @@ const Courses = () => {
   useEffect(() => {
     fetchCourses();
     setCurrentPage(1); // Reset page on filter change
-  }, [selectedCategory, selectedLevel, sortBy, searchParams]);
+  }, [search, selectedCategory, selectedLevel, sortBy, searchParams]);
+
+  const filterLocal = () => {
+    let filtered = [...fallbackStore.courses];
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(
+        (c) => c.category?.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+    if (selectedLevel !== 'All') {
+      filtered = filtered.filter((c) => c.level === selectedLevel);
+    }
+    if (search && search.trim()) {
+      const q = search.trim().toLowerCase();
+      filtered = filtered.filter(
+        (c) =>
+          c.title?.toLowerCase().includes(q) ||
+          c.category?.toLowerCase().includes(q) ||
+          c.subtitle?.toLowerCase().includes(q) ||
+          c.description?.toLowerCase().includes(q) ||
+          (c.tags && c.tags.some((t) => t.toLowerCase().includes(q)))
+      );
+    }
+    if (sortBy === 'price-low') {
+      filtered.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
+    } else if (sortBy === 'price-high') {
+      filtered.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
+    } else if (sortBy === 'rating') {
+      filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+    setCourses(filtered);
+  };
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -45,45 +76,27 @@ const Courses = () => {
       let queryUrl = `/courses?sort=${sortBy}`;
       if (selectedCategory !== 'All') queryUrl += `&category=${encodeURIComponent(selectedCategory)}`;
       if (selectedLevel !== 'All') queryUrl += `&level=${selectedLevel}`;
-      if (search) queryUrl += `&search=${encodeURIComponent(search)}`;
+      if (search.trim()) queryUrl += `&search=${encodeURIComponent(search.trim())}`;
 
       const res = await api.get(queryUrl);
       if (res.data?.success && res.data.data.length > 0) {
         setCourses(res.data.data);
       } else {
-        // Fallback filter
-        let filtered = fallbackStore.courses;
-        if (selectedCategory !== 'All') {
-          filtered = filtered.filter(c => c.category?.toLowerCase() === selectedCategory.toLowerCase());
-        }
-        if (selectedLevel !== 'All') {
-          filtered = filtered.filter(c => c.level === selectedLevel);
-        }
-        if (search) {
-          filtered = filtered.filter(c =>
-            c.title?.toLowerCase().includes(search.toLowerCase()) ||
-            c.subtitle?.toLowerCase().includes(search.toLowerCase()) ||
-            c.description?.toLowerCase().includes(search.toLowerCase())
-          );
-        }
-        setCourses(filtered);
+        filterLocal();
       }
     } catch (err) {
-      let filtered = fallbackStore.courses;
-      if (selectedCategory !== 'All') {
-        filtered = filtered.filter(c => c.category?.toLowerCase() === selectedCategory.toLowerCase());
-      }
-      setCourses(filtered);
+      filterLocal();
     } finally {
       setLoading(false);
     }
   };
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setCurrentPage(1);
     fetchCourses();
   };
+
 
   const clearAllFilters = () => {
     setSelectedCategory('All');
@@ -155,9 +168,19 @@ const Courses = () => {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by course title or keyword (e.g. .NET, Azure, SAP, VLSI)..."
+                placeholder="Search 50+ courses (e.g. Python, Azure, SAP, VLSI, SolidWorks)..."
                 className="w-full pl-11 pr-24 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
               />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="absolute right-20 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition"
+                  title="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
               <button
                 type="submit"
                 className="absolute right-2 px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition"
@@ -166,6 +189,7 @@ const Courses = () => {
               </button>
             </form>
           </div>
+
 
           {/* Level Filter */}
           <div className="md:col-span-3">
