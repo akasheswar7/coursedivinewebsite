@@ -154,12 +154,14 @@ ${outcomesText}
 4. CONTACT & COUNSELING
 -----------------------------------------------------
 Company: Course Divine Technology Pvt. Ltd.
+Address: Office No-3/23, Petrol Bunk, Land Mark Railway Station, near HP, near Simhachalam, Nad Junction, Gopalapatnam, Simhachalam, Visakhapatnam, Andhra Pradesh 530027
 Email: coursedivine@gmail.com
-Phone: +91 9100348679
+Phone: +91 91003 48679
 Official Portal: https://akasheswar7.github.io/coursedivinewebsite/
 
 =====================================================
 `;
+
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);

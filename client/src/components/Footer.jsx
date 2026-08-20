@@ -220,15 +220,17 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-brand-400 shrink-0 mt-1" />
-                <span>Course Divine Tech Hub, Outer Ring Road, Bengaluru, Karnataka 560103</span>
+                <span className="text-xs text-slate-300 leading-relaxed">
+                  Office No-3/23, Petrol Bunk, Land Mark Railway Station, near HP, near Simhachalam, Nad Junction, Gopalapatnam, Simhachalam, Visakhapatnam, Andhra Pradesh 530027
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-brand-400 shrink-0" />
-                <a href="tel:+919876543210" className="hover:text-brand-400 transition">+91 98765 43210</a>
+                <a href="tel:+919100348679" className="hover:text-brand-400 transition text-xs">+91 91003 48679</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-brand-400 shrink-0" />
-                <a href="mailto:support@coursedivine.com" className="hover:text-brand-400 transition">support@coursedivine.com</a>
+                <a href="mailto:coursedivine@gmail.com" className="hover:text-brand-400 transition text-xs">coursedivine@gmail.com</a>
               </li>
               <li className="pt-1">
                 <Link
@@ -240,6 +242,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
+
         </div>
 
         {/* Bottom Bar */}

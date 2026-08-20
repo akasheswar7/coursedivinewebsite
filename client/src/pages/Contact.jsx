@@ -83,7 +83,7 @@ const Contact = () => {
           {/* Left Column: Office Details */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
-              <h3 className="text-xl font-extrabold text-slate-900">Headquarters</h3>
+              <h3 className="text-xl font-extrabold text-slate-900">Headquarters & Corporate Office</h3>
               
               <div className="space-y-4 text-xs sm:text-sm text-slate-600">
                 <div className="flex items-start gap-3.5">
@@ -91,9 +91,9 @@ const Contact = () => {
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Campus Location</h4>
+                    <h4 className="font-bold text-slate-900">Corporate Office Address</h4>
                     <p className="text-slate-500 mt-0.5 leading-relaxed">
-                      Course Divine Tech Center, Outer Ring Road, Bellandur, Bengaluru, Karnataka 560103
+                      Office No-3/23, Petrol Bunk, Land Mark Railway Station, near HP, near Simhachalam, Nad Junction, Gopalapatnam, Simhachalam, Visakhapatnam, Andhra Pradesh 530027
                     </p>
                   </div>
                 </div>
@@ -103,9 +103,9 @@ const Contact = () => {
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Direct Phone</h4>
+                    <h4 className="font-bold text-slate-900">Direct Contact Phone</h4>
                     <p className="text-slate-500 mt-0.5">
-                      <a href="tel:+919876543210" className="hover:text-brand-600 font-medium">+91 98765 43210</a> / <a href="tel:+918041234567" className="hover:text-brand-600 font-medium">+91 (080) 4123-4567</a>
+                      <a href="tel:+919100348679" className="hover:text-brand-600 font-medium">+91 91003 48679</a>
                     </p>
                   </div>
                 </div>
@@ -117,7 +117,7 @@ const Contact = () => {
                   <div>
                     <h4 className="font-bold text-slate-900">Email Inquiries</h4>
                     <p className="text-slate-500 mt-0.5">
-                      <a href="mailto:admissions@coursedivine.com" className="hover:text-brand-600 font-medium">admissions@coursedivine.com</a>
+                      <a href="mailto:coursedivine@gmail.com" className="hover:text-brand-600 font-medium">coursedivine@gmail.com</a>
                     </p>
                   </div>
                 </div>
@@ -127,12 +127,13 @@ const Contact = () => {
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Counseling Hours</h4>
-                    <p className="text-slate-500 mt-0.5">Monday to Saturday: 9:00 AM – 8:00 PM IST</p>
+                    <h4 className="font-bold text-slate-900">Counseling & Working Hours</h4>
+                    <p className="text-slate-500 mt-0.5">Monday to Saturday: 9:00 AM – 7:30 PM IST</p>
                   </div>
                 </div>
               </div>
             </div>
+
 
             {/* Quick Map Visual Box */}
             <div className="bg-brand-900 text-white rounded-3xl p-6 border border-brand-800 shadow-md">
