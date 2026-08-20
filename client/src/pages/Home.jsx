@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+
 import {
   GraduationCap,
   BookOpen,
@@ -80,8 +82,11 @@ const AnimatedCounter = ({ target, duration = 2200, suffix = '', decimals = 0 })
 };
 
 const Home = () => {
+  const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
   const [courses, setCourses] = useState(fallbackStore.courses);
   const { showToast } = useNotification();
+
 
   const [enrollingCourse, setEnrollingCourse] = useState(null);
   const [selectedVideoTestimonial, setSelectedVideoTestimonial] = useState(null);
@@ -753,11 +758,11 @@ const Home = () => {
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
                   <div>
                     <span className="text-xl font-black text-slate-900">
-                      ${(course.discountPrice || course.price).toLocaleString('en-US')}.00
+                      ${Number(course.discountPrice || course.price || 499).toLocaleString('en-US')}.00
                     </span>
-                    {course.discountPrice && course.price > course.discountPrice && (
+                    {course.discountPrice && Number(course.price || 0) > Number(course.discountPrice || 0) && (
                       <span className="text-xs text-slate-400 line-through ml-2">
-                        ${course.price.toLocaleString('en-US')}.00
+                        ${Number(course.price || 0).toLocaleString('en-US')}.00
                       </span>
                     )}
                   </div>
@@ -772,13 +777,19 @@ const Home = () => {
 
                     <button
                       type="button"
-                      onClick={() => setEnrollingCourse(course)}
+                      onClick={() => {
+                        if (!isInCart(course._id)) {
+                          addToCart(course);
+                        }
+                        navigate('/checkout');
+                      }}
                       className="px-4 py-2.5 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition flex items-center gap-1.5"
                     >
                       Enroll Now
                     </button>
                   </div>
                 </div>
+
               </div>
             </div>
           ))}

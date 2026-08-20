@@ -153,18 +153,16 @@ const CourseCard = ({ course }) => {
 
         {/* Pricing with Strike-through in US Dollars ($) */}
         <div className="text-sm font-bold text-slate-900 flex items-center justify-center gap-2">
-          {course.price > (course.discountPrice || course.price) && (
+          {Number(course.price || 0) > Number(course.discountPrice || course.price || 0) && (
             <span className="text-xs text-slate-400 line-through font-normal">
-              ${course.price.toLocaleString('en-US')}.00
+              ${Number(course.price || 0).toLocaleString('en-US')}.00
             </span>
           )}
           <span className="text-slate-900 font-extrabold text-sm sm:text-base text-brand-600">
-            ${(course.discountPrice || course.price).toLocaleString('en-US')}.00
+            ${Number(course.discountPrice || course.price || 499).toLocaleString('en-US')}.00
           </span>
         </div>
       </div>
-
-
 
       {/* Action Buttons: Add to Cart & Quick Enroll */}
       <div className="pt-2 flex items-center gap-2">
@@ -183,21 +181,17 @@ const CourseCard = ({ course }) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setShowEnroll(true);
+            if (!isInCart(course._id)) {
+              addToCart(course);
+            }
+            navigate('/checkout');
           }}
           className="flex-1 py-2.5 px-3 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all duration-200"
         >
           Enroll Now
         </button>
-
-        {showEnroll && (
-          <EnrollmentModal
-            isOpen={showEnroll}
-            onClose={() => setShowEnroll(false)}
-            course={course}
-          />
-        )}
       </div>
+
     </div>
   );
 };

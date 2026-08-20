@@ -346,11 +346,11 @@ const CourseDetails = () => {
               <div>
                 <div className="flex items-baseline gap-2 mb-1">
                   <span className="text-3xl font-black text-slate-900">
-                    ${(course.discountPrice || course.price).toLocaleString('en-US')}.00
+                    ${Number(course.discountPrice || course.price || 499).toLocaleString('en-US')}.00
                   </span>
-                  {course.discountPrice && course.price > course.discountPrice && (
+                  {course.discountPrice && Number(course.price || 0) > Number(course.discountPrice || 0) && (
                     <span className="text-sm text-slate-400 line-through">
-                      ${course.price.toLocaleString('en-US')}.00
+                      ${Number(course.price || 0).toLocaleString('en-US')}.00
                     </span>
                   )}
                   {discountPercent > 0 && (
@@ -359,6 +359,7 @@ const CourseDetails = () => {
                     </span>
                   )}
                 </div>
+
                 <p className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
                   <ShieldCheck className="w-4 h-4" /> 7-Day 100% Money-Back Guarantee
                 </p>
@@ -422,14 +423,15 @@ const CourseDetails = () => {
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Special Offer</span>
           <div className="flex items-baseline gap-1.5">
             <span className="text-lg font-black text-slate-900">
-              ${(course.discountPrice || course.price).toLocaleString('en-US')}.00
+              ${Number(course.discountPrice || course.price || 499).toLocaleString('en-US')}.00
             </span>
-            {course.discountPrice && course.price > course.discountPrice && (
+            {course.discountPrice && Number(course.price || 0) > Number(course.discountPrice || 0) && (
               <span className="text-xs text-slate-400 line-through">
-                ${course.price.toLocaleString('en-US')}.00
+                ${Number(course.price || 0).toLocaleString('en-US')}.00
               </span>
             )}
           </div>
+
         </div>
 
         <div className="flex items-center gap-2">
