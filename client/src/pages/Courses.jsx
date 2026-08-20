@@ -16,16 +16,13 @@ import CourseCard from '../components/CourseCard';
 
 const Courses = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'All';
-  const initialSearch = searchParams.get('search') || '';
-
   const [courses, setCourses] = useState(fallbackStore.courses);
   const [categories, setCategories] = useState(fallbackStore.categories);
   const [loading, setLoading] = useState(false);
 
   // Filters State
-  const [search, setSearch] = useState(initialSearch);
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All');
   const [selectedLevel, setSelectedLevel] = useState('All');
   const [sortBy, setSortBy] = useState('popular');
 
@@ -34,68 +31,96 @@ const Courses = () => {
   const coursesPerPage = 9;
   const gridTopRef = useRef(null);
 
+  // Sync URL search parameters with state
   useEffect(() => {
-    fetchCourses();
-    setCurrentPage(1); // Reset page on filter change
-  }, [search, selectedCategory, selectedLevel, sortBy, searchParams]);
+    const urlSearch = searchParams.get('search');
+    const urlCategory = searchParams.get('category');
+    if (urlSearch !== null && urlSearch !== undefined) {
+      setSearch(urlSearch);
+    }
+    if (urlCategory) {
+      setSelectedCategory(urlCategory);
+    }
+  }, [searchParams]);
 
-  const filterLocal = () => {
-    let filtered = [...fallbackStore.courses];
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(
-        (c) => c.category?.toLowerCase() === selectedCategory.toLowerCase()
-      );
-    }
-    if (selectedLevel !== 'All') {
-      filtered = filtered.filter((c) => c.level === selectedLevel);
-    }
+  // Synchronously filter and sort courses whenever any filter changes
+  useEffect(() => {
+    filterAndSetCourses();
+    setCurrentPage(1);
+  }, [search, selectedCategory, selectedLevel, sortBy]);
+
+  const filterAndSetCourses = () => {
+    let list = [...fallbackStore.courses];
+
+    // 1. Instant Multi-keyword Search Matching
     if (search && search.trim()) {
-      const q = search.trim().toLowerCase();
-      filtered = filtered.filter(
-        (c) =>
-          c.title?.toLowerCase().includes(q) ||
-          c.category?.toLowerCase().includes(q) ||
-          c.subtitle?.toLowerCase().includes(q) ||
-          c.description?.toLowerCase().includes(q) ||
-          (c.tags && c.tags.some((t) => t.toLowerCase().includes(q)))
-      );
-    }
-    if (sortBy === 'price-low') {
-      filtered.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
-    } else if (sortBy === 'price-high') {
-      filtered.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
-    } else if (sortBy === 'rating') {
-      filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    }
-    setCourses(filtered);
-  };
+      const tokens = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      list = list.filter((course) => {
+        const metadata = [
+          course.title || '',
+          course.subtitle || '',
+          course.description || '',
+          course.category || '',
+          course.slug || '',
+          ...(course.tags || [])
+        ].join(' ').toLowerCase();
 
-  const fetchCourses = async () => {
-    setLoading(true);
-    try {
-      let queryUrl = `/courses?sort=${sortBy}`;
-      if (selectedCategory !== 'All') queryUrl += `&category=${encodeURIComponent(selectedCategory)}`;
-      if (selectedLevel !== 'All') queryUrl += `&level=${selectedLevel}`;
-      if (search.trim()) queryUrl += `&search=${encodeURIComponent(search.trim())}`;
+        return tokens.every((token) => metadata.includes(token));
+      });
+    }
 
-      const res = await api.get(queryUrl);
-      if (res.data?.success && res.data.data.length > 0) {
-        setCourses(res.data.data);
+    // 2. Category Matching
+    if (selectedCategory && selectedCategory !== 'All') {
+      const catLower = selectedCategory.toLowerCase().trim();
+      if (catLower === 'it courses' || (catLower.includes('it') && !catLower.includes('non'))) {
+        list = list.filter((c) => {
+          const cCat = (c.category || '').toLowerCase();
+          return !cCat.includes('design') && !cCat.includes('civil') && !cCat.includes('marketing');
+        });
+      } else if (catLower === 'non it courses' || catLower.includes('non')) {
+        list = list.filter((c) => {
+          const cCat = (c.category || '').toLowerCase();
+          return (
+            cCat.includes('design') ||
+            cCat.includes('civil') ||
+            cCat.includes('marketing') ||
+            cCat.includes('management') ||
+            cCat.includes('industrial') ||
+            cCat.includes('cad') ||
+            cCat.includes('bim')
+          );
+        });
       } else {
-        filterLocal();
+        list = list.filter(
+          (c) =>
+            (c.category || '').toLowerCase().includes(catLower) ||
+            catLower.includes((c.category || '').toLowerCase())
+        );
       }
-    } catch (err) {
-      filterLocal();
-    } finally {
-      setLoading(false);
     }
+
+    // 3. Level Filtering
+    if (selectedLevel && selectedLevel !== 'All') {
+      list = list.filter((c) => (c.level || '').toLowerCase().includes(selectedLevel.toLowerCase()));
+    }
+
+    // 4. Sorting Options
+    if (sortBy === 'price-low') {
+      list.sort((a, b) => (a.discountPrice || a.price || 0) - (b.discountPrice || b.price || 0));
+    } else if (sortBy === 'price-high') {
+      list.sort((a, b) => (b.discountPrice || b.price || 0) - (a.discountPrice || a.price || 0));
+    } else if (sortBy === 'rating') {
+      list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+
+    setCourses(list);
   };
 
   const handleSearchSubmit = (e) => {
     if (e) e.preventDefault();
-    setCurrentPage(1);
-    fetchCourses();
+    filterAndSetCourses();
   };
+
 
 
   const clearAllFilters = () => {
