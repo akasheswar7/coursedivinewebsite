@@ -16,8 +16,9 @@ const LeadCaptureModal = () => {
     email: '',
     countryCode: '+91',
     phone: '',
-    program: 'Data Science & AI'
+    program: 'IT Courses'
   });
+
 
   const { showToast } = useNotification();
 
@@ -254,16 +255,11 @@ const LeadCaptureModal = () => {
                     onChange={(e) => setFormData({ ...formData, program: e.target.value })}
                     className="w-full px-3.5 py-2 sm:py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-[#0F62FE] focus:outline-none"
                   >
-                    <option value="Data Science & AI">Data Science & AI Masterclass</option>
-                    <option value="Digital Marketing & Growth">Digital Marketing & Growth Mastery</option>
-                    <option value="SolidWorks 3D CAD">SolidWorks 3D CAD & Mechanical</option>
-                    <option value="ANSYS Simulation">ANSYS FEA & CFD Simulation</option>
-                    <option value="Python & Data Analytics">Python & Data Analytics</option>
-                    <option value="UI/UX Design Masterclass">UI/UX Design Masterclass</option>
-                    <option value="Azure Cloud & DevOps">Azure AI Infrastructure & DevOps</option>
-                    <option value="General Career Guidance">General Career Counseling</option>
+                    <option value="IT Courses">IT Courses</option>
+                    <option value="Non IT Courses">Non IT Courses</option>
                   </select>
                 </div>
+
 
                 {/* Submit Button */}
                 <button
