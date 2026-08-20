@@ -23,30 +23,22 @@ const LeadCaptureModal = () => {
 
   const { showToast } = useNotification();
 
-  // Trigger popup after entering website, ONLY IF student has NOT submitted yet
+  // Trigger popup automatically 2.5 seconds after arrival
   useEffect(() => {
-    const isSubmitted = localStorage.getItem('cd_lead_submitted') || sessionStorage.getItem('cd_lead_submitted');
-    if (isSubmitted) {
-      setSubmitted(true);
-      return; // Never show popup if already submitted
-    }
+    const isDismissed = sessionStorage.getItem('cd_lead_popup_dismissed_session');
+    if (isDismissed) return;
 
     const timer = setTimeout(() => {
-      const checkAgain = localStorage.getItem('cd_lead_submitted') || sessionStorage.getItem('cd_lead_submitted');
-      if (!checkAgain) {
-        setIsOpen(true);
-      }
-    }, 4000);
+      setIsOpen(true);
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
     setIsOpen(false);
-    sessionStorage.setItem('cd_lead_dismissed', 'true');
+    sessionStorage.setItem('cd_lead_popup_dismissed_session', 'true');
   };
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,7 +55,7 @@ const LeadCaptureModal = () => {
       phone: `${formData.countryCode} ${formData.phone.trim()}`,
       program: formData.program,
       recipientEmail: 'coursedivine@gmail.com',
-      source: '10-Second Lead Capture Popup',
+      source: 'Lead Capture Popup',
       submittedAt: new Date().toISOString()
     };
 
@@ -81,8 +73,7 @@ const LeadCaptureModal = () => {
       const existingLeads = JSON.parse(localStorage.getItem('cd_captured_leads') || '[]');
       existingLeads.push(leadPayload);
       localStorage.setItem('cd_captured_leads', JSON.stringify(existingLeads));
-      localStorage.setItem('cd_lead_submitted', 'true');
-      sessionStorage.setItem('cd_lead_submitted', 'true');
+      sessionStorage.setItem('cd_lead_popup_dismissed_session', 'true');
 
       // 3. Trigger FormSubmit / Cloud notification fallback to coursedivine@gmail.com
       if (typeof window !== 'undefined') {
@@ -111,10 +102,12 @@ const LeadCaptureModal = () => {
 
       setTimeout(() => {
         setIsOpen(false);
+        setSubmitted(false);
       }, 2500);
     } catch (err) {
       showToast('Submitted successfully! Our team will contact you soon.', 'success');
       setIsOpen(false);
+      setSubmitted(false);
     } finally {
       setLoading(false);
     }
@@ -122,21 +115,25 @@ const LeadCaptureModal = () => {
 
   return (
     <>
-      {/* Floating Quick-Open Counseling Pill ONLY when NOT submitted */}
-      {!isOpen && !submitted && (
+      {/* Floating Quick-Open Counseling Pill: Always Accessible */}
+      {!isOpen && (
         <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 left-6 z-[9000] flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-gradient-to-r from-[#6B21A8] via-[#7E22CE] to-[#0F62FE] text-white shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/40 group animate-bounce"
+          onClick={() => {
+            setSubmitted(false);
+            setIsOpen(true);
+          }}
+          className="fixed bottom-6 left-6 z-[9000] flex items-center gap-2.5 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#6B21A8] via-[#7E22CE] to-[#0F62FE] text-white shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/40 group"
           aria-label="Book Free Counseling"
         >
-          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
-            <Phone className="w-3.5 h-3.5 text-white" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/20 flex items-center justify-center">
+            <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
           </div>
-          <span className="text-xs font-black tracking-wide pr-1">
+          <span className="text-[11px] sm:text-xs font-black tracking-wide pr-1">
             Free Career Call 📞
           </span>
         </button>
       )}
+
 
 
       {/* Main 10-Second Lead Capture Popup */}
