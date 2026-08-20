@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Loader2, Phone, Mail, User, Sparkles, CheckCircle2, ShieldCheck, BookOpen } from 'lucide-react';
+import { X, Loader2, Phone, Mail, User, Sparkles, CheckCircle2, ShieldCheck, BookOpen, Lock } from 'lucide-react';
 import { useNotification } from '../context/NotificationContext';
+
 import api from '../services/api';
 import confetti from 'canvas-confetti';
 import logoImg from '../assets/logo.png';
