@@ -714,8 +714,13 @@ const Home = () => {
                 <img
                   src={course.thumbnail}
                   alt={course.title}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80';
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+
                 <div className="absolute top-3 left-3 bg-[#071F3F] text-white text-[11px] font-black px-3 py-1 rounded-lg shadow-sm border border-slate-700">
                   {course.category}
                 </div>
@@ -1052,8 +1057,13 @@ const Home = () => {
                 <img
                   src={project.image}
                   alt={project.title}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80';
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
                 />
+
                 <div className="absolute top-3 left-3 bg-[#071F3F]/90 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-md border border-slate-700">
                   {project.domain}
                 </div>
