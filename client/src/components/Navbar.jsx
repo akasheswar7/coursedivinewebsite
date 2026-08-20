@@ -20,6 +20,8 @@ import {
   Sparkles
 } from 'lucide-react';
 import logoImg from '../assets/logo.png';
+import ecellLogo from '../assets/ecell-iit-tirupati.png';
+
 
 
 const Navbar = () => {
@@ -376,7 +378,17 @@ const Navbar = () => {
                   <Sparkles className="w-3.5 h-3.5" />
                   Get Started
                 </Link>
+
+                {/* E-CELL | IIT TIRUPATI Logo Badge */}
+                <div className="flex items-center pl-1 shrink-0" title="E-CELL | IIT TIRUPATI">
+                  <img
+                    src={ecellLogo}
+                    alt="E-CELL | IIT TIRUPATI"
+                    className="h-8 sm:h-9 w-auto object-contain rounded-full shadow-md hover:scale-110 transition-transform cursor-pointer border border-white/40 bg-white"
+                  />
+                </div>
               </div>
+
             )}
 
             {/* Mobile Menu Toggle Button */}
@@ -503,7 +515,16 @@ const Navbar = () => {
                   >
                     Get Started Free
                   </Link>
+                  <div className="flex items-center justify-center gap-2 pt-3 border-t border-brand-800/80">
+                    <img
+                      src={ecellLogo}
+                      alt="E-CELL | IIT TIRUPATI"
+                      className="h-8 w-auto object-contain rounded-full border border-white/20 bg-white"
+                    />
+                    <span className="text-xs font-bold text-sky-200 tracking-wide">E-CELL | IIT TIRUPATI</span>
+                  </div>
                 </div>
+
               ) : (
                 <div className="flex flex-col gap-2">
                   <Link
