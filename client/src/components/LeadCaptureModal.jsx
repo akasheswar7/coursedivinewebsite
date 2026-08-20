@@ -14,10 +14,11 @@ const LeadCaptureModal = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    countryCode: '+91',
+    countryCode: '+1',
     phone: '',
     program: 'IT Courses'
   });
+
 
 
   const { showToast } = useNotification();
@@ -236,13 +237,16 @@ const LeadCaptureModal = () => {
                     onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
                     className="px-2.5 py-2.5 sm:py-3 rounded-xl border border-slate-300 bg-slate-50 text-[11px] sm:text-xs font-bold text-slate-700 focus:ring-2 focus:ring-[#0F62FE] focus:outline-none shrink-0"
                   >
-                    <option value="+91">IN (+91)</option>
                     <option value="+1">US (+1)</option>
+                    <option value="+91">IN (+91)</option>
                     <option value="+44">UK (+44)</option>
                     <option value="+971">UAE (+971)</option>
                     <option value="+61">AU (+61)</option>
                     <option value="+65">SG (+65)</option>
+                    <option value="+1">CA (+1)</option>
+                    <option value="+49">DE (+49)</option>
                   </select>
+
 
                   <input
                     type="tel"
