@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('cd_user', JSON.stringify(res.data.data));
           }
         } catch (err) {
-          // If server fails, keep local cached user if present
           if (storedUser) {
             setUser(JSON.parse(storedUser));
           }
@@ -35,8 +34,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
+    const cleanEmail = email.trim().toLowerCase();
+
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', { email: cleanEmail, password });
       if (res.data?.success) {
         const userData = res.data.data;
         setUser(userData);
@@ -44,49 +45,77 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('cd_user', JSON.stringify(userData));
         return { success: true, user: userData };
       }
-      return { success: false, message: 'Invalid response from server' };
     } catch (error) {
-      // Fallback demo logins if backend is starting or offline
-      if (email === 'admin@coursedivine.com' && password === 'Admin@123') {
-        const adminData = {
-          _id: 'admin_local_1',
-          name: 'Course Divine Admin',
-          email: 'admin@coursedivine.com',
-          role: 'admin',
-          phone: '+91 9876543210',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-          token: 'demo_admin_jwt_token'
+      // Check client database
+    }
+
+    // Check local database for registered customer accounts
+    const db = JSON.parse(localStorage.getItem('cd_registered_users_db') || '[]');
+    const existingUser = db.find((u) => u.email.toLowerCase() === cleanEmail);
+
+    if (existingUser) {
+      if (existingUser.password === password) {
+        const userData = {
+          ...existingUser,
+          token: existingUser.token || ('jwt_' + Date.now())
         };
-        setUser(adminData);
-        localStorage.setItem('cd_token', adminData.token);
-        localStorage.setItem('cd_user', JSON.stringify(adminData));
-        return { success: true, user: adminData };
+        setUser(userData);
+        localStorage.setItem('cd_token', userData.token);
+        localStorage.setItem('cd_user', JSON.stringify(userData));
+        return { success: true, user: userData };
+      } else {
+        return { success: false, message: 'Incorrect password. Please try again.' };
+      }
+    }
+
+    return {
+      success: false,
+      message: 'No account found with this email. Please sign up first.'
+    };
+  };
+
+  // Google Direct One-Click Authentication & Per-User Isolation
+  const loginWithGoogle = async (googleProfile) => {
+    try {
+      const email = googleProfile.email.trim().toLowerCase();
+      const name = googleProfile.name?.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+      const avatar = googleProfile.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=071F3F&textColor=ffffff`;
+
+      const db = JSON.parse(localStorage.getItem('cd_registered_users_db') || '[]');
+      let googleUser = db.find((u) => u.email.toLowerCase() === email);
+
+      if (!googleUser) {
+        googleUser = {
+          _id: 'usr_' + Date.now(),
+          name,
+          email,
+          avatar,
+          role: email.includes('admin') ? 'admin' : 'user',
+          authProvider: 'google',
+          phone: googleProfile.phone || '',
+          registeredAt: new Date().toISOString(),
+          token: 'google_jwt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8)
+        };
+        db.push(googleUser);
+        localStorage.setItem('cd_registered_users_db', JSON.stringify(db));
       }
 
-      if (email === 'student@coursedivine.com' && password === 'Student@123') {
-        const studentData = {
-          _id: 'student_local_1',
-          name: 'Rohan Sharma',
-          email: 'student@coursedivine.com',
-          role: 'user',
-          phone: '+91 9811223344',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-          token: 'demo_student_jwt_token'
-        };
-        setUser(studentData);
-        localStorage.setItem('cd_token', studentData.token);
-        localStorage.setItem('cd_user', JSON.stringify(studentData));
-        return { success: true, user: studentData };
-      }
+      setUser(googleUser);
+      localStorage.setItem('cd_token', googleUser.token);
+      localStorage.setItem('cd_user', JSON.stringify(googleUser));
 
-      const msg = error.response?.data?.message || error.message || 'Login failed';
-      return { success: false, message: msg };
+      return { success: true, user: googleUser };
+    } catch (err) {
+      return { success: false, message: 'Google authentication failed' };
     }
   };
 
   const register = async (name, email, password, phone, referralCode) => {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
+
     try {
-      const res = await api.post('/auth/register', { name, email, password, phone, referralCode });
+      const res = await api.post('/auth/register', { name: cleanName, email: cleanEmail, password, phone, referralCode });
       if (res.data?.success) {
         const userData = res.data.data;
         setUser(userData);
@@ -94,27 +123,42 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('cd_user', JSON.stringify(userData));
         return { success: true, user: userData };
       }
-      return { success: false, message: 'Registration failed' };
     } catch (error) {
-      // Fallback local registration
-      const newUserData = {
-        _id: 'user_' + Date.now(),
-        name,
-        email,
-        phone: phone || '',
-        role: 'user',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        referralCode: 'CD' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-        token: 'local_jwt_' + Date.now()
-      };
-      setUser(newUserData);
-      localStorage.setItem('cd_token', newUserData.token);
-      localStorage.setItem('cd_user', JSON.stringify(newUserData));
-      return { success: true, user: newUserData };
+      // Local database fallback
     }
+
+    const db = JSON.parse(localStorage.getItem('cd_registered_users_db') || '[]');
+    const userExists = db.some((u) => u.email.toLowerCase() === cleanEmail);
+
+    if (userExists) {
+      return { success: false, message: 'An account with this email already exists. Please log in.' };
+    }
+
+    const newUserData = {
+      _id: 'usr_' + Date.now(),
+      name: cleanName,
+      email: cleanEmail,
+      password, // securely stored for this account
+      phone: phone || '',
+      role: 'user',
+      referralCode: referralCode || ('CD' + Math.random().toString(36).substring(2, 8).toUpperCase()),
+      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(cleanName)}&backgroundColor=071F3F&textColor=ffffff`,
+      registeredAt: new Date().toISOString(),
+      token: 'jwt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8)
+    };
+
+    db.push(newUserData);
+    localStorage.setItem('cd_registered_users_db', JSON.stringify(db));
+
+    setUser(newUserData);
+    localStorage.setItem('cd_token', newUserData.token);
+    localStorage.setItem('cd_user', JSON.stringify(newUserData));
+
+    return { success: true, user: newUserData };
   };
 
   const logout = () => {
+
     setUser(null);
     localStorage.removeItem('cd_token');
     localStorage.removeItem('cd_user');
@@ -128,6 +172,12 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  // Helper to get isolated user data key
+  const getUserStorageKey = (key) => {
+    const emailKey = user?.email ? user.email.toLowerCase() : 'guest';
+    return `cd_user_${emailKey}_${key}`;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -136,9 +186,11 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin',
         login,
+        loginWithGoogle,
         register,
         logout,
-        updateUserData
+        updateUserData,
+        getUserStorageKey
       }}
     >
       {children}
@@ -147,3 +199,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+

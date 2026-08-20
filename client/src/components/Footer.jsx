@@ -76,13 +76,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-brand-900/80">
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white shadow-md shadow-brand-500/30">
-                <GraduationCap className="w-6 h-6" />
-              </div>
-              <span className="text-2xl font-extrabold text-white tracking-tight">
-                COURSE <span className="text-brand-400">DIVINE</span>
-              </span>
+            <Link to="/" className="inline-block">
+              <img
+                src="/logo.png"
+                alt="Course Divine Logo"
+                className="h-12 sm:h-14 w-auto object-contain rounded-lg shadow-md"
+              />
             </Link>
             <p className="text-slate-300/80 text-sm leading-relaxed max-w-sm">
               Course Divine is a premier technology training institute empowering learners and professionals with industry-led masterclasses, live capstone projects, guaranteed internship opportunities, and verified placement pathways.

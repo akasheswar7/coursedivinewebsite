@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import api from '../services/api';
 import PaymentModal from '../components/PaymentModal';
+import { getRazorpayKeyId } from '../config/razorpay';
 
 const Checkout = () => {
   const { cartItems, finalAmount, subtotal, clearCart, cartCount } = useCart();
@@ -18,10 +19,10 @@ const Checkout = () => {
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
-    city: 'New York',
-    state: 'NY',
-    postalCode: '10001',
-    country: 'United States'
+    city: 'Hyderabad',
+    state: 'Telangana',
+    postalCode: '500081',
+    country: 'India'
   });
 
   const [loading, setLoading] = useState(false);
@@ -52,7 +53,7 @@ const Checkout = () => {
           title: item.title
         })),
         totalAmount: finalAmount,
-        currency: 'USD',
+        currency: 'INR',
         billingDetails: billing
       });
 
@@ -60,8 +61,8 @@ const Checkout = () => {
         setOrderDetails({
           orderId: res.data.order.id,
           amount: finalAmount,
-          currency: 'USD',
-          key: res.data.keyId || 'rzp_test_course_divine',
+          currency: 'INR',
+          key: res.data.keyId || getRazorpayKeyId(),
           name: 'Course Divine',
           description: `Enrollment for ${cartCount} courses`,
           prefill: {
@@ -76,8 +77,8 @@ const Checkout = () => {
         setOrderDetails({
           orderId: 'ORD_CD_' + Date.now().toString().slice(-6),
           amount: finalAmount,
-          currency: 'USD',
-          key: 'rzp_test_course_divine',
+          currency: 'INR',
+          key: getRazorpayKeyId(),
           name: 'Course Divine',
           description: `Enrollment for ${cartCount} courses`,
           prefill: {
@@ -93,8 +94,8 @@ const Checkout = () => {
       setOrderDetails({
         orderId: 'ORD_CD_' + Date.now().toString().slice(-6),
         amount: finalAmount,
-        currency: 'USD',
-        key: 'rzp_test_course_divine',
+        currency: 'INR',
+        key: getRazorpayKeyId(),
         name: 'Course Divine',
         description: `Enrollment for ${cartCount} courses`,
         prefill: {
@@ -103,11 +104,14 @@ const Checkout = () => {
           contact: billing.phone
         }
       });
+
+
       setShowPaymentModal(true);
     } finally {
       setLoading(false);
     }
   };
+
 
   const handlePaymentSuccess = async (paymentData) => {
     setShowPaymentModal(false);
@@ -272,9 +276,11 @@ const Checkout = () => {
               </div>
               <div className="flex justify-between text-base font-extrabold text-slate-900 pt-2 border-t border-slate-100">
                 <span>Payable Amount</span>
-                <span>${finalAmount.toLocaleString('en-US')}.00</span>
+                <span className="text-brand-600 font-mono">${finalAmount.toLocaleString('en-US')}.00</span>
               </div>
             </div>
+
+
 
             <div className="p-4 rounded-2xl bg-brand-50 text-xs text-brand-800 space-y-1">
               <div className="font-bold flex items-center gap-1">

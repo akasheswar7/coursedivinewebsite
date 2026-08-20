@@ -62,18 +62,12 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-[72px] gap-4">
           
           {/* Left: Brand Logo */}
-          <Link to="/" className="flex items-center gap-3 shrink-0 mr-2 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tight text-white flex items-center gap-1 leading-tight">
-                COURSE <span className="text-brand-400">DIVINE</span>
-              </span>
-              <span className="text-[9px] uppercase tracking-widest font-bold text-brand-300">
-                EXCELLENCE IN TECH
-              </span>
-            </div>
+          <Link to="/" className="flex items-center gap-2.5 shrink-0 mr-2 group">
+            <img
+              src="/logo.png"
+              alt="Course Divine Logo"
+              className="h-11 sm:h-12 w-auto object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform"
+            />
           </Link>
 
           {/* Center: Desktop Navigation Links (Single Line, Never Wraps) */}
@@ -346,6 +340,8 @@ const Navbar = () => {
             )}
 
             {/* Mobile Menu Toggle Button */}
+
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition"
@@ -359,17 +355,22 @@ const Navbar = () => {
 
       {/* Mobile Sliding Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-[72px] bg-slate-900/60 backdrop-blur-sm z-50 animate-in fade-in duration-200">
-          <div className="bg-[#071F3F] text-white w-4/5 max-w-sm h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-r border-brand-800">
+        <div
+          onClick={() => setMobileMenuOpen(false)}
+          className="lg:hidden fixed inset-0 top-[72px] bg-slate-900/60 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#071F3F] text-white w-4/5 max-w-sm h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-r border-brand-800"
+          >
+
             <div className="space-y-4">
               <div className="flex items-center gap-3 pb-4 border-b border-brand-800">
-                <div className="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold">
-                  <GraduationCap className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-white text-sm">Course Divine</h4>
-                  <p className="text-[11px] text-brand-300">Excellence in Tech</p>
-                </div>
+                <img
+                  src="/logo.png"
+                  alt="Course Divine"
+                  className="h-10 w-auto object-contain rounded-lg shadow-sm"
+                />
               </div>
 
               <div className="flex flex-col gap-1 text-sm font-medium">

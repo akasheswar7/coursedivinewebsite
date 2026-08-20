@@ -169,10 +169,12 @@ const Cart = () => {
             {/* Total Amount */}
             <div className="flex items-baseline justify-between">
               <span className="text-sm font-bold text-slate-900">Final Payable</span>
-              <span className="text-2xl font-black text-slate-900">
+              <span className="text-2xl font-black text-slate-900 text-brand-600">
                 ${finalAmount.toLocaleString('en-US')}.00
               </span>
             </div>
+
+
 
             {/* Coupon Box */}
             <div className="pt-2">

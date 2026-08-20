@@ -36,49 +36,83 @@ const Dashboard = () => {
   const [profilePhone, setProfilePhone] = useState(user?.phone || '');
   const [profileBio, setProfileBio] = useState(user?.bio || 'Passionate software developer.');
 
+  const userEmail = (user?.email || 'guest@coursedivine.com').toLowerCase();
+  const isDemoStudent = userEmail === 'student@coursedivine.com';
+
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [userEmail]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // 1. Fetch Enrollments
-      const enrollRes = await api.get('/enrollments/my-courses');
-      if (enrollRes.data?.success && enrollRes.data.data.length > 0) {
-        setEnrolledCourses(enrollRes.data.data);
+      // 1. Fetch Isolated Enrollments for this user
+      const enrollStorageKey = 'cd_enrollments_' + userEmail;
+      const localEnrollments = JSON.parse(localStorage.getItem(enrollStorageKey) || 'null');
+
+      if (localEnrollments && Array.isArray(localEnrollments)) {
+        setEnrolledCourses(localEnrollments);
       } else {
-        // Fallback demo enrolled course
-        setEnrolledCourses([
-          {
-            _id: 'enr1',
-            progressPercent: 45,
-            status: 'active',
-            enrolledAt: '2026-01-15T00:00:00.000Z',
-            course: fallbackStore.courses[0]
-          }
-        ]);
+        const enrollRes = await api.get('/enrollments/my-courses');
+        if (enrollRes.data?.success && enrollRes.data.data.length > 0) {
+          setEnrolledCourses(enrollRes.data.data);
+        } else if (isDemoStudent) {
+          setEnrolledCourses([
+            {
+              _id: 'enr1',
+              progressPercent: 45,
+              status: 'active',
+              enrolledAt: '2026-01-15T00:00:00.000Z',
+              course: fallbackStore.courses[0]
+            }
+          ]);
+        } else {
+          // Fresh isolated state for any new user
+          setEnrolledCourses([]);
+        }
       }
 
-      // 2. Fetch Orders
-      const orderRes = await api.get('/orders/my-orders');
-      if (orderRes.data?.success) {
-        setOrders(orderRes.data.data);
+      // 2. Fetch Isolated Orders for this user
+      const orderStorageKey = 'cd_orders_' + userEmail;
+      const localOrders = JSON.parse(localStorage.getItem(orderStorageKey) || 'null');
+      if (localOrders && Array.isArray(localOrders)) {
+        setOrders(localOrders);
+      } else {
+        const orderRes = await api.get('/orders/my-orders');
+        if (orderRes.data?.success && orderRes.data.data.length > 0) {
+          setOrders(orderRes.data.data);
+        } else if (isDemoStudent) {
+          setOrders([
+            {
+              _id: 'ORD_DEMO_2026',
+              transactionId: 'TXN_DEMO_99881',
+              createdAt: '2026-01-15T00:00:00.000Z',
+              totalAmount: 499,
+              items: [{ course: fallbackStore.courses[0], price: 499 }]
+            }
+          ]);
+        } else {
+          setOrders([]);
+        }
       }
 
-      // 3. Fetch Certificates
-      const certRes = await api.get('/certificates/my-certificates');
-      if (certRes.data?.success && certRes.data.data.length > 0) {
-        setCertificates(certRes.data.data);
-      } else {
+      // 3. Fetch Isolated Certificates for this user
+      const certStorageKey = 'cd_certs_' + userEmail;
+      const localCerts = JSON.parse(localStorage.getItem(certStorageKey) || 'null');
+      if (localCerts && Array.isArray(localCerts)) {
+        setCertificates(localCerts);
+      } else if (isDemoStudent) {
         setCertificates(fallbackStore.certificates);
+      } else {
+        setCertificates([]);
       }
 
-      // 4. Fetch Internships
-      const internRes = await api.get('/internships/my-applications');
-      if (internRes.data?.success && internRes.data.data.length > 0) {
-        setInternships(internRes.data.data);
-      } else {
+      // 4. Fetch Isolated Internships for this user
+      const internStorageKey = 'cd_internships_' + userEmail;
+      const localInternships = JSON.parse(localStorage.getItem(internStorageKey) || 'null');
+      if (localInternships && Array.isArray(localInternships)) {
+        setInternships(localInternships);
+      } else if (isDemoStudent) {
         setInternships([
           {
             _id: 'app_1',
@@ -88,22 +122,32 @@ const Dashboard = () => {
             createdAt: '2026-02-01T00:00:00.000Z'
           }
         ]);
+      } else {
+        setInternships([]);
       }
     } catch (err) {
-      setEnrolledCourses([
-        {
-          _id: 'enr1',
-          progressPercent: 45,
-          status: 'active',
-          enrolledAt: '2026-01-15T00:00:00.000Z',
-          course: fallbackStore.courses[0]
-        }
-      ]);
-      setCertificates(fallbackStore.certificates);
+      if (isDemoStudent) {
+        setEnrolledCourses([
+          {
+            _id: 'enr1',
+            progressPercent: 45,
+            status: 'active',
+            enrolledAt: '2026-01-15T00:00:00.000Z',
+            course: fallbackStore.courses[0]
+          }
+        ]);
+        setCertificates(fallbackStore.certificates);
+      } else {
+        setEnrolledCourses([]);
+        setCertificates([]);
+        setOrders([]);
+        setInternships([]);
+      }
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
@@ -218,101 +262,136 @@ const Dashboard = () => {
       {/* TAB CONTENT: 1. ENROLLED COURSES */}
       {activeTab === 'courses' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {enrolledCourses.map((item) => (
-              <div
-                key={item._id}
-                className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-card-hover transition duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center gap-4 mb-4">
-                    <img
-                      src={item.course?.thumbnail}
-                      alt={item.course?.title}
-                      className="w-20 h-14 rounded-xl object-cover border"
-                    />
-                    <div>
-                      <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md">
-                        {item.course?.category}
-                      </span>
-                      <h3 className="text-sm font-bold text-slate-900 mt-1 line-clamp-1">
-                        {item.course?.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* Progress Bar */}
-                  <div className="space-y-1.5 my-4">
-                    <div className="flex justify-between text-xs font-semibold text-slate-700">
-                      <span>Course Progress</span>
-                      <span className="text-brand-600">{item.progressPercent || 45}% Completed</span>
-                    </div>
-                    <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-brand-600 rounded-full transition-all duration-500"
-                        style={{ width: `${item.progressPercent || 45}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-xs text-slate-400 font-medium">
-                    {item.course?.duration}
-                  </span>
-                  <Link
-                    to={`/courses/${item.course?.slug}`}
-                    className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition flex items-center gap-1.5"
-                  >
-                    <Play className="w-3.5 h-3.5" /> Continue Learning
-                  </Link>
-                </div>
+          {enrolledCourses.length === 0 ? (
+            <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-sm space-y-4 max-w-xl mx-auto">
+              <div className="w-16 h-16 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center mx-auto text-2xl">
+                🎓
               </div>
-            ))}
-          </div>
+              <h3 className="text-lg font-bold text-slate-900">No Enrolled Courses Yet</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                You haven't enrolled in any courses with <strong>{userEmail}</strong>. Explore our high-impact tech masterclasses with live mentorship & assured internships.
+              </p>
+              <div className="pt-2">
+                <Link
+                  to="/courses"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs shadow-md transition"
+                >
+                  <BookOpen className="w-4 h-4" /> Explore Course Catalogue
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {enrolledCourses.map((item) => (
+                <div
+                  key={item._id}
+                  className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-card-hover transition duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center gap-4 mb-4">
+                      <img
+                        src={item.course?.thumbnail}
+                        alt={item.course?.title}
+                        className="w-20 h-14 rounded-xl object-cover border"
+                      />
+                      <div>
+                        <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md">
+                          {item.course?.category || 'Tech Masterclass'}
+                        </span>
+                        <h3 className="text-sm font-bold text-slate-900 mt-1 line-clamp-1">
+                          {item.course?.title}
+                        </h3>
+                        {item.batch && (
+                          <span className="text-[10px] text-slate-500 font-medium">Batch: {item.batch}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="space-y-1.5 my-4">
+                      <div className="flex justify-between text-xs font-semibold text-slate-700">
+                        <span>Course Progress</span>
+                        <span className="text-brand-600">{item.progressPercent || 15}% Completed</span>
+                      </div>
+                      <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-brand-600 rounded-full transition-all duration-500"
+                          style={{ width: `${item.progressPercent || 15}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <span className="text-xs text-slate-400 font-medium">
+                      {item.course?.duration || '8 Weeks'}
+                    </span>
+                    <Link
+                      to={`/courses/${item.course?.slug || 'full-stack-web-development'}`}
+                      className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition flex items-center gap-1.5"
+                    >
+                      <Play className="w-3.5 h-3.5" /> Continue Learning
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       {/* TAB CONTENT: 2. CERTIFICATES */}
       {activeTab === 'certificates' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {certificates.map((cert) => (
-              <div
-                key={cert._id}
-                className="bg-white rounded-3xl p-8 border-2 border-brand-200 shadow-xl space-y-4 relative overflow-hidden"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold">
-                    <Award className="w-6 h-6" />
-                  </div>
-                  <span className="text-xs font-mono font-bold px-2.5 py-1 bg-brand-50 text-brand-700 rounded-lg">
-                    {cert.certificateId}
-                  </span>
-                </div>
-
-                <div>
-                  <h4 className="text-lg font-bold text-slate-900">{cert.courseTitle || cert.course?.title}</h4>
-                  <p className="text-xs text-slate-500 mt-1">Grade: <strong>{cert.grade || 'Distinction (A+)'}</strong></p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <Link
-                    to={`/verify-certificate?id=${cert.certificateId}`}
-                    className="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1"
-                  >
-                    Verify Credential <ExternalLink className="w-3.5 h-3.5" />
-                  </Link>
-                  <button
-                    onClick={() => window.print()}
-                    className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1"
-                  >
-                    <Download className="w-3.5 h-3.5" /> Download
-                  </button>
-                </div>
+          {certificates.length === 0 ? (
+            <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-sm space-y-4 max-w-xl mx-auto">
+              <div className="w-16 h-16 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto text-2xl">
+                📜
               </div>
-            ))}
-          </div>
+              <h3 className="text-lg font-bold text-slate-900">No Certificates Earned Yet</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Complete all course modules and capstone projects to earn your APSCHE & ISO 9001:2015 accredited digital certificate.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {certificates.map((cert) => (
+                <div
+                  key={cert._id}
+                  className="bg-white rounded-3xl p-8 border-2 border-brand-200 shadow-xl space-y-4 relative overflow-hidden"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center font-bold">
+                      <Award className="w-6 h-6" />
+                    </div>
+                    <span className="text-xs font-mono font-bold px-2.5 py-1 bg-brand-50 text-brand-700 rounded-lg">
+                      {cert.certificateId}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="text-lg font-bold text-slate-900">{cert.courseTitle || cert.course?.title}</h4>
+                    <p className="text-xs text-slate-500 mt-1">Grade: <strong>{cert.grade || 'Distinction (A+)'}</strong></p>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <Link
+                      to={`/verify-certificate?id=${cert.certificateId}`}
+                      className="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1"
+                    >
+                      Verify Credential <ExternalLink className="w-3.5 h-3.5" />
+                    </Link>
+                    <button
+                      onClick={() => window.print()}
+                      className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1"
+                    >
+                      <Download className="w-3.5 h-3.5" /> Download
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -321,23 +400,35 @@ const Dashboard = () => {
         <div className="space-y-6">
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
             <h3 className="text-lg font-bold text-slate-900">Your Internship Submissions</h3>
-            <div className="divide-y divide-slate-100">
-              {internships.map((app) => (
-                <div key={app._id} className="py-4 first:pt-0 flex items-center justify-between gap-4">
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm">{app.domain}</h4>
-                    <p className="text-xs text-slate-500">Track: {app.duration} • Submitted on {new Date(app.createdAt || Date.now()).toLocaleDateString()}</p>
+            {internships.length === 0 ? (
+              <div className="text-center py-8 space-y-3">
+                <p className="text-xs text-slate-500">You haven't submitted any corporate internship applications yet.</p>
+                <Link
+                  to="/internships"
+                  className="inline-block px-5 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs"
+                >
+                  Explore Internships
+                </Link>
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-100">
+                {internships.map((app) => (
+                  <div key={app._id} className="py-4 first:pt-0 flex items-center justify-between gap-4">
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-sm">{app.domain}</h4>
+                      <p className="text-xs text-slate-500">Track: {app.duration} • Submitted on {new Date(app.createdAt || Date.now()).toLocaleDateString()}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      app.status === 'Accepted'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-amber-100 text-amber-800'
+                    }`}>
+                      {app.status || 'Under Review'}
+                    </span>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    app.status === 'Accepted'
-                      ? 'bg-emerald-100 text-emerald-800'
-                      : 'bg-amber-100 text-amber-800'
-                  }`}>
-                    {app.status || 'Under Review'}
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -345,22 +436,28 @@ const Dashboard = () => {
       {/* TAB CONTENT: 4. ORDER HISTORY */}
       {activeTab === 'orders' && (
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
-          <h3 className="text-lg font-bold text-slate-900">Your Order History</h3>
-          <p className="text-xs text-slate-500">Every transaction processed with Course Divine.</p>
-
-          <div className="divide-y divide-slate-100">
-            <div className="py-4 flex items-center justify-between">
-              <div>
-                <span className="text-xs font-mono font-bold text-slate-900">ORD-CD-99842</span>
-                <p className="text-xs text-slate-500">Full Stack Web Development (MERN)</p>
-              </div>
-              <div className="text-right">
-                <span className="font-bold text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
-                  PAID $430.00
-                </span>
-              </div>
+          <h3 className="text-lg font-bold text-slate-900">Payment & Invoice History</h3>
+          {orders.length === 0 ? (
+            <div className="text-center py-8 text-xs text-slate-500">
+              No payment transactions recorded for this account.
             </div>
-          </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {orders.map((order) => (
+                <div key={order._id} className="py-4 first:pt-0 flex items-center justify-between gap-4">
+                  <div>
+                    <h4 className="font-bold text-slate-900 text-sm">Txn ID: {order.transactionId || order._id}</h4>
+                    <p className="text-xs text-slate-500">
+                      Date: {new Date(order.createdAt || Date.now()).toLocaleDateString()} • ₹{order.totalAmount || 499} Paid
+                    </p>
+                  </div>
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                    Paid & Verified
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

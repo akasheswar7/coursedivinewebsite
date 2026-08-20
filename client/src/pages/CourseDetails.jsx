@@ -342,7 +342,7 @@ const CourseDetails = () => {
                 </div>
               </div>
 
-              {/* Pricing Section in US Dollars */}
+              {/* Pricing Section in US Dollars ($) */}
               <div>
                 <div className="flex items-baseline gap-2 mb-1">
                   <span className="text-3xl font-black text-slate-900">
@@ -363,6 +363,8 @@ const CourseDetails = () => {
                   <ShieldCheck className="w-4 h-4" /> 7-Day 100% Money-Back Guarantee
                 </p>
               </div>
+
+
 
               {/* Action Buttons */}
               <div className="space-y-2.5">

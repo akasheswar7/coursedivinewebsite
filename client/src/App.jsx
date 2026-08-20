@@ -1,5 +1,5 @@
-import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { NotificationProvider } from './context/NotificationContext';
@@ -40,63 +40,120 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
 import NotFound from './pages/NotFound';
 
+// Helper component that automatically scrolls window to top on route change
+const ScrollToTopOnRoute = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
+// Global Error Boundary to prevent crashes
+class GlobalErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("App Crash Protected:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6 text-center space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-2xl">
+            CD
+          </div>
+          <h2 className="text-2xl font-black">Something went wrong</h2>
+          <p className="text-xs text-slate-400 max-w-md">
+            The page encountered an unexpected state. Click below to refresh smoothly.
+          </p>
+          <button
+            onClick={() => {
+              this.setState({ hasError: false });
+              window.location.href = '#/';
+            }}
+            className="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs"
+          >
+            Return to Homepage
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <CartProvider>
-          <NotificationProvider>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow">
-                <Routes>
-                  {/* Public Pages */}
-                  <Route path="/" element={<Home />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/courses/:slug" element={<CourseDetails />} />
-                  <Route path="/internships" element={<Internships />} />
-                  <Route path="/placements" element={<Placements />} />
-                  <Route path="/get-certified" element={<GetCertified />} />
-                  <Route path="/verify-certificate" element={<VerifyCertificate />} />
-                  <Route path="/refer-and-earn" element={<ReferAndEarn />} />
-                  <Route path="/our-programme" element={<OurProgramme />} />
-                  <Route path="/our-team" element={<OurTeam />} />
-                  <Route path="/careers" element={<Careers />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:slug" element={<BlogDetails />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                  <Route path="/terms-and-conditions" element={<TermsConditions />} />
+    <GlobalErrorBoundary>
+      <Router>
+        <ScrollToTopOnRoute />
+        <AuthProvider>
+          <CartProvider>
+            <NotificationProvider>
+              <div className="flex flex-col min-h-screen bg-[#F8FAFD] text-slate-800">
+                <Navbar />
+                <main className="flex-grow">
+                  <Routes>
+                    {/* Public Pages */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/courses" element={<Courses />} />
+                    <Route path="/courses/:slug" element={<CourseDetails />} />
+                    <Route path="/internships" element={<Internships />} />
+                    <Route path="/placements" element={<Placements />} />
+                    <Route path="/get-certified" element={<GetCertified />} />
+                    <Route path="/verify-certificate" element={<VerifyCertificate />} />
+                    <Route path="/refer-and-earn" element={<ReferAndEarn />} />
+                    <Route path="/our-programme" element={<OurProgramme />} />
+                    <Route path="/our-team" element={<OurTeam />} />
+                    <Route path="/careers" element={<Careers />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/blog/:slug" element={<BlogDetails />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/terms-and-conditions" element={<TermsConditions />} />
 
-                  {/* Student Dashboard */}
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/dashboard/*" element={<Dashboard />} />
+                    {/* Student Dashboard */}
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/dashboard/*" element={<Dashboard />} />
 
-                  {/* Admin Portal */}
-                  <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="/admin/courses" element={<AdminCourses />} />
-                  <Route path="/admin/users" element={<AdminUsers />} />
-                  <Route path="/admin/internships" element={<AdminInternships />} />
-                  <Route path="/admin/enquiries" element={<AdminEnquiries />} />
-                  <Route path="/admin/blogs" element={<AdminBlogs />} />
+                    {/* Admin Portal */}
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="/admin/courses" element={<AdminCourses />} />
+                    <Route path="/admin/users" element={<AdminUsers />} />
+                    <Route path="/admin/internships" element={<AdminInternships />} />
+                    <Route path="/admin/enquiries" element={<AdminEnquiries />} />
+                    <Route path="/admin/blogs" element={<AdminBlogs />} />
 
-                  {/* 404 Not Found */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-              <Footer />
-            </div>
-          </NotificationProvider>
-        </CartProvider>
-      </AuthProvider>
-    </Router>
+                    {/* 404 Not Found */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+                <Footer />
+              </div>
+            </NotificationProvider>
+          </CartProvider>
+        </AuthProvider>
+      </Router>
+    </GlobalErrorBoundary>
   );
 }
 
 export default App;
+

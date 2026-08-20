@@ -17,12 +17,14 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
+import EnrollmentModal from './EnrollmentModal';
 
 const CourseCard = ({ course }) => {
   const { addToCart, isInCart } = useCart();
   const { showToast } = useNotification();
   const navigate = useNavigate();
   const [imgError, setImgError] = useState(false);
+  const [showEnroll, setShowEnroll] = useState(false);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -149,34 +151,56 @@ const CourseCard = ({ course }) => {
           </h3>
         </Link>
 
-        {/* Pricing with Strike-through and .00 in US Dollars ($) */}
+        {/* Pricing with Strike-through in US Dollars ($) */}
         <div className="text-sm font-bold text-slate-900 flex items-center justify-center gap-2">
           {course.price > (course.discountPrice || course.price) && (
             <span className="text-xs text-slate-400 line-through font-normal">
               ${course.price.toLocaleString('en-US')}.00
             </span>
           )}
-          <span className="text-slate-900 font-extrabold text-sm sm:text-base">
+          <span className="text-slate-900 font-extrabold text-sm sm:text-base text-brand-600">
             ${(course.discountPrice || course.price).toLocaleString('en-US')}.00
           </span>
         </div>
       </div>
 
-      {/* Red Coral "Add to cart" Button */}
-      <div className="pt-2">
+
+
+      {/* Action Buttons: Add to Cart & Quick Enroll */}
+      <div className="pt-2 flex items-center gap-2">
         <button
           onClick={handleAddToCart}
-          className={`w-full py-2.5 px-4 rounded-xl text-white font-bold text-xs shadow-md transition-all duration-200 ${
+          className={`flex-1 py-2.5 px-3 rounded-xl text-white font-bold text-xs shadow-md transition-all duration-200 ${
             isInCart(course._id)
               ? 'bg-emerald-600 hover:bg-emerald-700'
               : 'bg-[#FF5555] hover:bg-[#E64444]'
           }`}
         >
-          {isInCart(course._id) ? 'View in Cart' : 'Add to cart'}
+          {isInCart(course._id) ? 'In Cart' : 'Add to Cart'}
         </button>
+
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowEnroll(true);
+          }}
+          className="flex-1 py-2.5 px-3 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all duration-200"
+        >
+          Enroll Now
+        </button>
+
+        {showEnroll && (
+          <EnrollmentModal
+            isOpen={showEnroll}
+            onClose={() => setShowEnroll(false)}
+            course={course}
+          />
+        )}
       </div>
     </div>
   );
 };
 
 export default CourseCard;
+
