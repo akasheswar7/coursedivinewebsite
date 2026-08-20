@@ -64,17 +64,18 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#071F3F] text-white shadow-md select-none border-b border-[#0D2F5D]">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[72px] gap-4">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-[72px] gap-3 sm:gap-4">
           
           {/* Left: Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 shrink-0 mr-2 group">
+          <Link to="/" className="flex items-center gap-2 shrink-0 mr-1 sm:mr-2 group">
             <img
               src={logoImg}
               alt="Course Divine Logo"
-              className="h-11 sm:h-12 w-auto object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform"
+              className="h-8 sm:h-12 w-auto object-contain rounded-md sm:rounded-lg shadow-sm group-hover:scale-105 transition-transform"
             />
           </Link>
+
 
 
           {/* Center: Desktop Navigation Links (Single Line, Never Wraps) */}
@@ -396,8 +397,9 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div
           onClick={() => setMobileMenuOpen(false)}
-          className="lg:hidden fixed inset-0 top-[72px] bg-slate-900/60 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+          className="lg:hidden fixed inset-0 top-14 sm:top-[72px] bg-slate-900/60 backdrop-blur-sm z-50 animate-in fade-in duration-200"
         >
+
           <div
             onClick={(e) => e.stopPropagation()}
             className="bg-[#071F3F] text-white w-4/5 max-w-sm h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-r border-brand-800"

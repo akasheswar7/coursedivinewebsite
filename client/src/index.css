@@ -33,12 +33,16 @@
   background: #94a3b8;
 }
 
-/* Mobile Touch Optimizations */
+/* Mobile Screen Proportional Scaling */
 @media (max-width: 640px) {
+  html {
+    font-size: 13.5px;
+  }
   button, a {
     touch-action: manipulation;
   }
 }
+
 
 /* Glassmorphic Blue Card */
 .glass-blue {
