@@ -24,17 +24,18 @@ const LeadCaptureModal = () => {
 
   const { showToast } = useNotification();
 
-  // Trigger popup automatically 2.5 seconds after arrival
+  // Trigger popup automatically 10 seconds after arrival
   useEffect(() => {
     const isDismissed = sessionStorage.getItem('cd_lead_popup_dismissed_session');
     if (isDismissed) return;
 
     const timer = setTimeout(() => {
       setIsOpen(true);
-    }, 2500);
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, []);
+
 
   const handleClose = () => {
     setIsOpen(false);
