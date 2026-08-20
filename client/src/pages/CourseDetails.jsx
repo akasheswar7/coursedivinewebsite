@@ -15,8 +15,19 @@ import {
   Globe,
   Users,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Lock,
+  Unlock,
+  Download,
+  FileText,
+  User,
+  Mail,
+  Phone,
+  X,
+  Loader2
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import logoImg from '../assets/logo.png';
 import api, { fallbackStore } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
@@ -33,6 +44,20 @@ const CourseDetails = () => {
   const [openModuleIndex, setOpenModuleIndex] = useState(0);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Curriculum & Course Handout Lock State
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    return !!(localStorage.getItem('cd_syllabus_unlocked') || localStorage.getItem('cd_lead_submitted'));
+  });
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [unlockForm, setUnlockForm] = useState({
+    name: '',
+    email: '',
+    countryCode: '+1',
+    phone: ''
+  });
+  const [isSubmittingUnlock, setIsSubmittingUnlock] = useState(false);
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -83,6 +108,123 @@ const CourseDetails = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(window.location.href);
       showToast('Course link copied to clipboard!', 'info');
+    }
+  };
+
+  const downloadHandout = () => {
+    const syllabusText = course?.curriculum
+      ?.map(
+        (m, i) =>
+          `Module ${i + 1}: ${m.title} (${m.duration})\n` +
+          (m.description ? `  Overview: ${m.description}\n` : '') +
+          `  Topics Covered:\n` +
+          (m.topics?.map((t) => `    • ${t.title} [${t.duration}]`).join('\n') || '    • Practical Live Projects & Case Studies')
+      )
+      .join('\n\n') || 'Comprehensive curriculum with hands-on capstone projects.';
+
+    const outcomesText = course?.learningOutcomes?.map((o) => `  ✓ ${o}`).join('\n') || '  ✓ Industry standard technical competencies';
+
+    const content = `=====================================================
+COURSE DIVINE TECHNOLOGY PVT. LTD.
+Official Course Handout & Certified Curriculum
+=====================================================
+
+Course Title: ${course?.title || 'Masterclass'}
+Category: ${course?.category || 'Technical Certification'}
+Duration: ${course?.duration || '8-12 Weeks'}
+Accreditation: APSCHE / IAF / ISO 9001:2015 Verified
+Target Notification / Mentorship: coursedivine@gmail.com
+
+-----------------------------------------------------
+1. COURSE OVERVIEW
+-----------------------------------------------------
+${course?.overview || course?.description || 'Industry-led training with 1-on-1 mentorship.'}
+
+-----------------------------------------------------
+2. DETAILED MODULES & SYLLABUS BREAKDOWN
+-----------------------------------------------------
+${syllabusText}
+
+-----------------------------------------------------
+3. LEARNING OUTCOMES & INDUSTRY DELIVERABLES
+-----------------------------------------------------
+${outcomesText}
+
+-----------------------------------------------------
+4. CONTACT & COUNSELING
+-----------------------------------------------------
+Company: Course Divine Technology Pvt. Ltd.
+Email: coursedivine@gmail.com
+Phone: +91 9100348679
+Official Portal: https://akasheswar7.github.io/coursedivinewebsite/
+
+=====================================================
+`;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${(course?.slug || 'course-divine')}-handout.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleUnlockSubmit = async (e) => {
+    e.preventDefault();
+    if (!unlockForm.email || !unlockForm.phone) {
+      showToast('Please enter your email and mobile number.', 'error');
+      return;
+    }
+
+    setIsSubmittingUnlock(true);
+
+    const payload = {
+      name: unlockForm.name.trim() || 'Student',
+      email: unlockForm.email.trim().toLowerCase(),
+      phone: `${unlockForm.countryCode} ${unlockForm.phone.trim()}`,
+      course: course?.title || 'Course Details',
+      action: 'Course Handout & Syllabus Unlock',
+      submittedAt: new Date().toISOString()
+    };
+
+    try {
+      // 1. Dispatch lead to coursedivine@gmail.com
+      const formData = new FormData();
+      formData.append('Student Name', payload.name);
+      formData.append('Email', payload.email);
+      formData.append('Phone Number', payload.phone);
+      formData.append('Course Handout Requested', payload.course);
+      formData.append('_subject', `Course Handout Request: ${payload.name} (${payload.course})`);
+      formData.append('_captcha', 'false');
+
+      fetch('https://formsubmit.co/ajax/coursedivine@gmail.com', {
+        method: 'POST',
+        body: formData
+      }).catch(() => null);
+
+      // 2. Persist locally
+      localStorage.setItem('cd_syllabus_unlocked', 'true');
+      localStorage.setItem('cd_lead_submitted', 'true');
+      setIsUnlocked(true);
+      setShowUnlockModal(false);
+
+      confetti({
+        particleCount: 140,
+        spread: 75,
+        origin: { y: 0.6 }
+      });
+
+      showToast(`🎉 Syllabus & Handout Unlocked! Details sent to coursedivine@gmail.com`, 'success');
+      downloadHandout();
+    } catch (err) {
+      setIsUnlocked(true);
+      setShowUnlockModal(false);
+      showToast('Unlocked successfully!', 'success');
+    } finally {
+      setIsSubmittingUnlock(false);
     }
   };
 
@@ -178,39 +320,120 @@ const CourseDetails = () => {
               )}
             </div>
 
-            {/* Curriculum Accordion */}
-            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
-              <div className="flex items-center justify-between">
+            {/* Curriculum Accordion with Locked Modules & Handout Download */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                 <div>
-                  <h2 className="text-xl font-extrabold text-slate-900">Curriculum & Syllabus</h2>
+                  <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-brand-600" /> Curriculum & Syllabus
+                  </h2>
                   <p className="text-xs text-slate-500 mt-1">
-                    {course.curriculum?.length || 0} Comprehensive Modules • {course.totalLectures || 45} Practical Lectures
+                    {course.curriculum?.length || 0} Modules • {course.totalLectures || 45} Practical Lectures
                   </p>
                 </div>
+
+                {/* Handout Action Button */}
+                {isUnlocked ? (
+                  <button
+                    onClick={downloadHandout}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-black hover:bg-emerald-100 transition shadow-sm shrink-0"
+                  >
+                    <Download className="w-4 h-4 text-emerald-600" />
+                    <span>Download Course Handout</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setShowUnlockModal(true)}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-blue-600 text-white text-xs font-black hover:from-brand-700 hover:to-blue-700 transition shadow-md shadow-blue-500/20 shrink-0"
+                  >
+                    <Lock className="w-4 h-4" />
+                    <span>Unlock Handout & Syllabus 🔒</span>
+                  </button>
+                )}
               </div>
+
+              {/* Module Lock Notice Banner when locked */}
+              {!isUnlocked && (
+                <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-center justify-between gap-3 text-xs text-amber-900">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-amber-200/70 flex items-center justify-center shrink-0">
+                      <Lock className="w-4 h-4 text-amber-800" />
+                    </div>
+                    <div>
+                      <span className="font-extrabold block">Module 1 is free to preview.</span>
+                      <span className="text-amber-700 text-[11px]">Enter basic details to unlock all curriculum modules and download the official handout.</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowUnlockModal(true)}
+                    className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-black shrink-0 transition"
+                  >
+                    Unlock Now 🔒
+                  </button>
+                </div>
+              )}
 
               <div className="space-y-3">
                 {course.curriculum && course.curriculum.map((module, idx) => {
-                  const isOpen = openModuleIndex === idx;
+                  const isModuleLocked = !isUnlocked && idx > 0;
+                  const isOpen = openModuleIndex === idx && !isModuleLocked;
+
                   return (
                     <div
                       key={idx}
-                      className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-200"
+                      className={`border rounded-2xl overflow-hidden transition-all duration-200 ${
+                        isModuleLocked ? 'border-slate-200 bg-slate-50/60 opacity-90' : 'border-slate-200'
+                      }`}
                     >
                       <button
-                        onClick={() => setOpenModuleIndex(isOpen ? null : idx)}
+                        onClick={() => {
+                          if (isModuleLocked) {
+                            setShowUnlockModal(true);
+                            showToast('🔒 Please enter your basic details to unlock full modules and download handout.', 'info');
+                          } else {
+                            setOpenModuleIndex(isOpen ? null : idx);
+                          }
+                        }}
                         className="w-full px-5 py-4 bg-slate-50 hover:bg-brand-50/50 flex items-center justify-between text-left transition"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="w-7 h-7 rounded-lg bg-brand-600 text-white font-bold text-xs flex items-center justify-center">
+                          <span
+                            className={`w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center ${
+                              isModuleLocked
+                                ? 'bg-slate-300 text-slate-700'
+                                : 'bg-brand-600 text-white'
+                            }`}
+                          >
                             {idx + 1}
                           </span>
                           <div>
-                            <h4 className="text-sm font-bold text-slate-900">{module.title}</h4>
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-sm font-bold text-slate-900">{module.title}</h4>
+                              {isModuleLocked ? (
+                                <span className="px-2 py-0.5 rounded-md bg-amber-100/90 text-amber-800 text-[10px] font-black flex items-center gap-1 border border-amber-200">
+                                  <Lock className="w-2.5 h-2.5 text-amber-700" /> Locked
+                                </span>
+                              ) : (
+                                idx === 0 && (
+                                  <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+                                    Free Preview
+                                  </span>
+                                )
+                              )}
+                            </div>
                             <span className="text-[11px] text-slate-500">{module.duration}</span>
                           </div>
                         </div>
-                        {isOpen ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+
+                        {isModuleLocked ? (
+                          <div className="p-1.5 rounded-lg bg-amber-100/80 text-amber-800">
+                            <Lock className="w-4 h-4" />
+                          </div>
+                        ) : isOpen ? (
+                          <ChevronUp className="w-4 h-4 text-slate-500" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-slate-500" />
+                        )}
                       </button>
 
                       {isOpen && (
@@ -246,6 +469,7 @@ const CourseDetails = () => {
                 })}
               </div>
             </div>
+
 
             {/* Learning Outcomes & Prerequisites */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -454,8 +678,152 @@ const CourseDetails = () => {
           </button>
         </div>
       </div>
+
+
+      {/* Unlock Complete Handout & Syllabus Modal */}
+      {showUnlockModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in duration-200">
+
+          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden text-slate-800 animate-in zoom-in-95 duration-200">
+            
+            {/* Header */}
+            <div className="bg-[#071F3F] text-white p-5 relative flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <img
+                  src={logoImg}
+                  alt="Course Divine"
+                  className="h-8 w-auto bg-white/10 p-1 rounded-lg"
+                />
+                <div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-brand-300 flex items-center gap-1">
+                    <Lock className="w-3 h-3 text-amber-400" /> Syllabus & Handout Access
+                  </span>
+                  <h3 className="text-sm sm:text-base font-black text-white line-clamp-1">
+                    Unlock Full Curriculum & Handout
+                  </h3>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowUnlockModal(false)}
+                className="p-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleUnlockSubmit} className="p-6 space-y-4">
+              <div className="text-center space-y-1">
+                <div className="w-12 h-12 rounded-2xl bg-brand-50 border border-brand-200 text-brand-600 flex items-center justify-center mx-auto shadow-sm">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <h4 className="text-base font-black text-slate-900 pt-1">
+                  Download Official Course Handout
+                </h4>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                  Provide your basic contact details to unlock all module contents and receive the course syllabus.
+                </p>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                    Full Name *
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      required
+                      value={unlockForm.name}
+                      onChange={(e) => setUnlockForm({ ...unlockForm, name: e.target.value })}
+                      placeholder="e.g. John Doe"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                    Email Address *
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <input
+                      type="email"
+                      required
+                      value={unlockForm.email}
+                      onChange={(e) => setUnlockForm({ ...unlockForm, email: e.target.value })}
+                      placeholder="john@example.com"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                    Mobile Number *
+                  </label>
+                  <div className="flex gap-2">
+                    <select
+                      value={unlockForm.countryCode}
+                      onChange={(e) => setUnlockForm({ ...unlockForm, countryCode: e.target.value })}
+                      className="px-2.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-brand-500 focus:outline-none shrink-0"
+                    >
+                      <option value="+1">US (+1)</option>
+                      <option value="+91">IN (+91)</option>
+                      <option value="+44">UK (+44)</option>
+                      <option value="+971">UAE (+971)</option>
+                      <option value="+61">AU (+61)</option>
+                      <option value="+65">SG (+65)</option>
+                      <option value="+1">CA (+1)</option>
+                      <option value="+49">DE (+49)</option>
+                    </select>
+
+                    <div className="relative flex-1">
+                      <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                      <input
+                        type="tel"
+                        required
+                        value={unlockForm.phone}
+                        onChange={(e) => setUnlockForm({ ...unlockForm, phone: e.target.value })}
+                        placeholder="Phone number *"
+                        className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isSubmittingUnlock}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-blue-600 hover:from-brand-700 hover:to-blue-700 text-white font-extrabold text-xs shadow-lg shadow-blue-500/20 transition flex items-center justify-center gap-2"
+                >
+                  {isSubmittingUnlock ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Unlocking Syllabus...
+                    </>
+                  ) : (
+                    <>
+                      <Unlock className="w-4 h-4" /> Unlock Curriculum & Download Handout 🔓
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <p className="text-[10px] text-center text-slate-400">
+                🔒 Official Course Divine Brochure will be automatically downloaded and emailed.
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default CourseDetails;
+
