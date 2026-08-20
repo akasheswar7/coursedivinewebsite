@@ -122,7 +122,10 @@ function App() {
                     <Route path="/our-team" element={<OurTeam />} />
                     <Route path="/careers" element={<Careers />} />
                     <Route path="/testimonials" element={<Testimonials />} />
+                    <Route path="/reviews" element={<Testimonials />} />
+                    <Route path="/student-testimonials" element={<Testimonials />} />
                     <Route path="/contact" element={<Contact />} />
+
 
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/blog/:slug" element={<BlogDetails />} />
