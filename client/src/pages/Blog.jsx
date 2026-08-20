@@ -18,7 +18,18 @@ const Blog = () => {
       .catch(() => {});
   }, []);
 
-  const categories = ['All', 'Career Guide', 'Development', 'Interview Prep'];
+  const categories = [
+    'All',
+    'AI & Machine Learning',
+    'Cloud & DevOps',
+    'Data Science',
+    'Core Engineering',
+    'Design & UI/UX',
+    'Mechanical & CAD',
+    'Marketing & Growth',
+    'Interview Prep'
+  ];
+
 
   const filteredBlogs = blogs.filter((b) => {
     const matchesCategory = selectedCategory === 'All' || b.category === selectedCategory;
