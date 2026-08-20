@@ -22,7 +22,9 @@ import ReferAndEarn from './pages/ReferAndEarn';
 import OurProgramme from './pages/OurProgramme';
 import OurTeam from './pages/OurTeam';
 import Careers from './pages/Careers';
+import Testimonials from './pages/Testimonials';
 import Contact from './pages/Contact';
+
 import Blog from './pages/Blog';
 import BlogDetails from './pages/BlogDetails';
 import Cart from './pages/Cart';
@@ -119,7 +121,9 @@ function App() {
                     <Route path="/our-programme" element={<OurProgramme />} />
                     <Route path="/our-team" element={<OurTeam />} />
                     <Route path="/careers" element={<Careers />} />
+                    <Route path="/testimonials" element={<Testimonials />} />
                     <Route path="/contact" element={<Contact />} />
+
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/blog/:slug" element={<BlogDetails />} />
                     <Route path="/cart" element={<Cart />} />

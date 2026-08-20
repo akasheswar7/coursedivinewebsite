@@ -155,10 +155,16 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/testimonials" className="hover:text-brand-400 transition flex items-center gap-1.5 font-bold text-amber-300">
+                  <ArrowRight className="w-3.5 h-3.5 text-amber-400" /> Student Testimonials
+                </Link>
+              </li>
+              <li>
                 <Link to="/placements" className="hover:text-brand-400 transition flex items-center gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-brand-500" /> Placement Records
                 </Link>
               </li>
+
               <li>
                 <Link to="/get-certified" className="hover:text-brand-400 transition flex items-center gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-brand-500" /> Get Certified

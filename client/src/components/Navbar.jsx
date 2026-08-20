@@ -17,11 +17,12 @@ import {
   Briefcase,
   Layers,
   Users,
-  Sparkles
+  Sparkles,
+  Star,
+  MessageSquareQuote
 } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import ecellLogo from '../assets/ecell-iit-tirupati.png';
-
 
 
 const Navbar = () => {
@@ -49,6 +50,7 @@ const Navbar = () => {
   }, [location.pathname]);
 
   const moreLinks = [
+    { name: 'Student Testimonials', path: '/testimonials', icon: MessageSquareQuote, desc: 'Verified student feedback' },
     { name: 'Get Certified', path: '/get-certified', icon: Award, desc: 'Professional credentials' },
     { name: 'Verify Certificate', path: '/verify-certificate', icon: ShieldCheck, desc: 'Credential verification' },
     { name: 'Refer & Earn', path: '/refer-and-earn', icon: Gift, desc: 'Earn ₹500 per friend' },
@@ -58,6 +60,7 @@ const Navbar = () => {
   ];
 
   const blogCategories = [
+
     { name: 'All Articles', path: '/blog' },
     { name: 'Career Guides', path: '/blog?category=Career+Guide' },
     { name: 'Development', path: '/blog?category=Development' },
@@ -150,10 +153,11 @@ const Navbar = () => {
             >
               <button
                 className={`flex items-center gap-1 whitespace-nowrap transition-colors py-1 ${
-                  moreDropdownOpen || ['/get-certified', '/verify-certificate', '/refer-and-earn', '/our-programme', '/our-team', '/careers'].includes(location.pathname)
+                  moreDropdownOpen || ['/testimonials', '/get-certified', '/verify-certificate', '/refer-and-earn', '/our-programme', '/our-team', '/careers'].includes(location.pathname)
                     ? 'text-brand-400 font-semibold'
                     : 'text-white/90 hover:text-brand-300'
                 }`}
+
               >
                 <span>More</span>
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${moreDropdownOpen ? 'rotate-180' : ''}`} />
