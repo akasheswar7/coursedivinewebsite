@@ -136,14 +136,19 @@ const LeadCaptureModal = () => {
           <div className="flex flex-col items-center space-y-2 pt-2">
             <div className="relative">
               <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#071F3F] via-[#0D366D] to-[#0F62FE] p-1 shadow-xl">
-                <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center overflow-hidden border-2 border-white">
-                  <User className="w-10 h-10 text-white" />
+                <div className="w-full h-full rounded-full bg-slate-900 overflow-hidden border-2 border-white">
+                  <img
+                    src="/founder.png"
+                    alt="Ch. Jhansi - Founder, Course Divine Technology"
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
               </div>
-              <span className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
+              <span className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-md">
                 <CheckCircle2 className="w-3.5 h-3.5 text-white" />
               </span>
             </div>
+
 
             <div>
               <h3 className="text-base font-extrabold text-slate-900">

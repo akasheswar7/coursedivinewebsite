@@ -117,29 +117,37 @@ const About = () => {
               <div className="relative group">
                 <div className="w-full aspect-[4/5] rounded-3xl bg-gradient-to-br from-[#071F3F] via-[#0D366D] to-[#0F62FE] p-1.5 shadow-2xl overflow-hidden flex flex-col items-center justify-center text-center relative">
                   
-                  {/* Photo Placeholder Frame */}
-                  <div className="w-full h-full rounded-[22px] bg-slate-900/90 border border-white/10 flex flex-col items-center justify-center p-6 text-white space-y-3 relative overflow-hidden">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-sky-400 to-[#0F62FE] flex items-center justify-center shadow-xl border-4 border-white/20">
-                      <UserCheck className="w-12 h-12 text-white" />
-                    </div>
+                  {/* Official Founder Photo & Badge */}
+                  <div className="w-full h-full rounded-[22px] overflow-hidden relative flex flex-col justify-end bg-slate-900">
+                    <img
+                      src="/founder.png"
+                      alt="Ch. Jhansi - Founder, Course Divine Technology"
+                      className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
+                    />
 
-                    <div className="space-y-1">
-                      <h3 className="text-xl font-black text-white">Ch. Jhansi</h3>
-                      <p className="text-xs text-sky-300 font-bold uppercase tracking-wider">Founder & Director</p>
-                      <p className="text-[11px] text-slate-300">Course Divine Technology Pvt. Ltd.</p>
-                    </div>
+                    {/* Bottom Info Gradient Strip */}
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-5 text-white space-y-2 pt-16">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="text-xl font-black text-white">Ch. Jhansi</h3>
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
+                        </div>
+                        <p className="text-xs text-sky-300 font-bold uppercase tracking-wider">Founder & Director</p>
+                        <p className="text-[11px] text-slate-300">Course Divine Technology Pvt. Ltd.</p>
+                      </div>
 
-                    <div className="pt-2 border-t border-white/10 w-full text-center">
-                      <span className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30">
-                        🎓 M.A. Psychology (Arunodaya University)
-                      </span>
+                      <div className="pt-1.5 border-t border-white/15">
+                        <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30">
+                          🎓 M.A. Psychology (Arunodaya University)
+                        </span>
+                      </div>
                     </div>
                   </div>
-
                 </div>
               </div>
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-1.5">
+
                 <div className="font-bold text-slate-900 flex items-center gap-1.5">
                   <Compass className="w-4 h-4 text-[#0F62FE]" /> Core Specialization:
                 </div>
