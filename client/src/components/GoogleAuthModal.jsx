@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
+import logoImg from '../assets/logo.png';
+
 
 const GoogleAuthModal = ({ isOpen, onClose, redirectPath = '/dashboard' }) => {
   const { loginWithGoogle } = useAuth();
@@ -122,10 +124,11 @@ const GoogleAuthModal = ({ isOpen, onClose, redirectPath = '/dashboard' }) => {
                   <Check className="w-7 h-7 stroke-[2.5]" />
                 </div>
                 <img
-                  src="/logo.png"
+                  src={logoImg}
                   alt="Course Divine"
                   className="h-10 w-auto object-contain rounded-lg border border-slate-200"
                 />
+
               </div>
 
               <div>

@@ -4,6 +4,8 @@ import { GraduationCap, Mail, Lock, LogIn, Sparkles, Loader2, AlertCircle, Shiel
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import GoogleAuthModal from '../components/GoogleAuthModal';
+import logoImg from '../assets/logo.png';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -50,11 +52,12 @@ const Login = () => {
         <div className="text-center space-y-2">
           <Link to="/" className="inline-block mb-3">
             <img
-              src="/logo.png"
+              src={logoImg}
               alt="Course Divine"
               className="h-12 w-auto object-contain rounded-xl shadow-md mx-auto"
             />
           </Link>
+
           <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Account Login</h2>
           <p className="text-xs text-slate-500">Sign in to access your student dashboard, courses, and certificates.</p>
         </div>

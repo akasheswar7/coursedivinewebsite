@@ -19,6 +19,8 @@ import {
   Quote,
   UserCheck
 } from 'lucide-react';
+import founderImg from '../assets/founder.png';
+
 
 const About = () => {
   const milestones = [
@@ -120,10 +122,11 @@ const About = () => {
                   {/* Official Founder Photo & Badge */}
                   <div className="w-full h-full rounded-[22px] overflow-hidden relative flex flex-col justify-end bg-slate-900">
                     <img
-                      src="/founder.png"
+                      src={founderImg}
                       alt="Ch. Jhansi - Founder, Course Divine Technology"
                       className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
                     />
+
 
                     {/* Bottom Info Gradient Strip */}
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent p-5 text-white space-y-2 pt-16">

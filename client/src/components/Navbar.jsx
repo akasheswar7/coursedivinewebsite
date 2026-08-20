@@ -18,6 +18,8 @@ import {
   Users,
   Sparkles
 } from 'lucide-react';
+import logoImg from '../assets/logo.png';
+
 
 const Navbar = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
@@ -64,11 +66,12 @@ const Navbar = () => {
           {/* Left: Brand Logo */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0 mr-2 group">
             <img
-              src="/logo.png"
+              src={logoImg}
               alt="Course Divine Logo"
               className="h-11 sm:h-12 w-auto object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform"
             />
           </Link>
+
 
           {/* Center: Desktop Navigation Links (Single Line, Never Wraps) */}
           <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-[15px] font-medium tracking-wide">
@@ -367,11 +370,12 @@ const Navbar = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-3 pb-4 border-b border-brand-800">
                 <img
-                  src="/logo.png"
+                  src={logoImg}
                   alt="Course Divine"
                   className="h-10 w-auto object-contain rounded-lg shadow-sm"
                 />
               </div>
+
 
               <div className="flex flex-col gap-1 text-sm font-medium">
                 <Link to="/" className="px-3 py-2.5 rounded-xl hover:bg-white/10 transition">

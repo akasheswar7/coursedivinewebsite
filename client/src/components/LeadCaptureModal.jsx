@@ -3,6 +3,8 @@ import { X, Loader2, Phone, Mail, User, Sparkles, CheckCircle2, ShieldCheck, Boo
 import { useNotification } from '../context/NotificationContext';
 import api from '../services/api';
 import confetti from 'canvas-confetti';
+import logoImg from '../assets/logo.png';
+import founderImg from '../assets/founder.png';
 
 const LeadCaptureModal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -147,7 +149,7 @@ const LeadCaptureModal = () => {
               {/* Modal Header with Course Divine Logo */}
               <div className="text-center space-y-2">
                 <img
-                  src="/logo.png"
+                  src={logoImg}
                   alt="Course Divine"
                   className="h-8 sm:h-10 w-auto object-contain rounded-lg border border-slate-200 shadow-sm mx-auto"
                 />
@@ -159,12 +161,13 @@ const LeadCaptureModal = () => {
                 <div className="w-14 h-14 sm:w-18 sm:h-18 rounded-full bg-gradient-to-tr from-[#071F3F] via-[#0D366D] to-[#0F62FE] p-0.5 shadow-lg">
                   <div className="w-full h-full rounded-full bg-slate-900 overflow-hidden border-2 border-white">
                     <img
-                      src="/founder.png"
+                      src={founderImg}
                       alt="Ch. Jhansi - Founder, Course Divine Technology"
                       className="w-full h-full object-cover object-top"
                     />
                   </div>
                 </div>
+
                 <span className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-md">
                   <CheckCircle2 className="w-2.5 h-2.5 text-white" />
                 </span>

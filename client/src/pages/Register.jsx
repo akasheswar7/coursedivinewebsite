@@ -4,6 +4,8 @@ import { GraduationCap, Mail, Lock, User, Phone, Sparkles, Loader2, AlertCircle,
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import GoogleAuthModal from '../components/GoogleAuthModal';
+import logoImg from '../assets/logo.png';
+
 
 const Register = () => {
   const [searchParams] = useSearchParams();
@@ -69,11 +71,12 @@ const Register = () => {
         <div className="text-center space-y-2">
           <Link to="/" className="inline-block mb-3">
             <img
-              src="/logo.png"
+              src={logoImg}
               alt="Course Divine"
               className="h-12 w-auto object-contain rounded-xl shadow-md mx-auto"
             />
           </Link>
+
           <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Create Student Account</h2>
           <p className="text-xs text-slate-500">Join 25,000+ developers mastering tech with Course Divine.</p>
         </div>

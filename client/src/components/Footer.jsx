@@ -16,6 +16,8 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useNotification } from '../context/NotificationContext';
+import logoImg from '../assets/logo.png';
+
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -93,11 +95,12 @@ const Footer = () => {
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="inline-block">
               <img
-                src="/logo.png"
+                src={logoImg}
                 alt="Course Divine Logo"
                 className="h-12 sm:h-14 w-auto object-contain rounded-lg shadow-md"
               />
             </Link>
+
             <p className="text-slate-300/80 text-sm leading-relaxed max-w-sm">
               Course Divine is a premier technology training institute empowering learners and professionals with industry-led masterclasses, live capstone projects, guaranteed internship opportunities, and verified placement pathways.
             </p>
