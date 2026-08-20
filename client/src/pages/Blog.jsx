@@ -22,13 +22,17 @@ const Blog = () => {
     'All',
     'AI & Machine Learning',
     'Cloud & DevOps',
+    'Enterprise ERP',
+    'Cyber Security',
     'Data Science',
+    'Development',
     'Core Engineering',
     'Design & UI/UX',
     'Mechanical & CAD',
     'Marketing & Growth',
     'Interview Prep'
   ];
+
 
   const filteredBlogs = blogs.filter((b) => {
     const matchesCategory = selectedCategory === 'All' || b.category === selectedCategory;
