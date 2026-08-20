@@ -92,83 +92,87 @@ const CourseCard = ({ course }) => {
   const IconComponent = theme.icon;
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col h-full overflow-hidden text-center justify-between p-4">
+    <div className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col h-full overflow-hidden text-center justify-between p-3 sm:p-4">
       
       {/* Course Thumbnail Image or Branded Vector Fallback */}
       <Link
         to={`/courses/${course.slug}`}
-        className="relative block aspect-square max-h-56 overflow-hidden rounded-xl bg-slate-100 mb-3 select-none"
+        className="relative block aspect-square max-h-48 sm:max-h-56 overflow-hidden rounded-xl bg-slate-100 mb-2.5 sm:mb-3 select-none"
       >
-        {!imgError && course.thumbnail ? (
+        {!imgError && course.image ? (
           <img
-            src={course.thumbnail}
+            src={course.image}
             alt={course.title}
             onError={() => setImgError(true)}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${theme.bg} p-5 flex flex-col justify-between items-center text-white relative overflow-hidden group-hover:scale-105 transition-transform duration-300`}>
-            {/* Background watermark icon */}
-            <IconComponent className="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 pointer-events-none" />
-            
-            {/* Top Logo pill */}
-            <div className="w-full flex items-center justify-between z-10">
-              <div className="flex items-center gap-1.5 text-[10px] font-bold text-white/90 bg-white/10 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
-                <GraduationCap className="w-3.5 h-3.5 text-brand-300" />
-                <span>Course Divine</span>
+          /* Dynamic Branded Course Poster Fallback */
+          <div className={`w-full h-full bg-gradient-to-br ${theme.bg} p-4 flex flex-col justify-between relative overflow-hidden text-white group-hover:scale-105 transition-transform duration-300`}>
+            {/* Background glowing sphere */}
+            <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+
+            {/* Top Row: Brand pill + verified accreditation */}
+            <div className="flex items-center justify-between z-10">
+              <span className="text-[10px] font-black tracking-widest uppercase bg-white/20 px-2 py-0.5 rounded backdrop-blur-sm">
+                COURSE DIVINE
+              </span>
+              <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-300 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                <span>APSCHE</span>
+                <Check className="w-2.5 h-2.5 text-emerald-400" />
               </div>
             </div>
 
             {/* Center Icon & Title Abbreviation */}
             <div className="flex flex-col items-center justify-center my-auto z-10 space-y-2">
-              <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shadow-lg border border-white/20">
-                <IconComponent className="w-6 h-6 text-brand-200" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shadow-lg border border-white/20">
+                <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-brand-200" />
               </div>
-              <div className="text-xs font-black uppercase tracking-wider text-white line-clamp-2 px-2 text-center drop-shadow-md">
+              <div className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-white line-clamp-2 px-2 text-center drop-shadow-md">
                 {course.title.replace('Certified Course', '').replace('Training', '').trim()}
               </div>
             </div>
 
             {/* Bottom Category Badge */}
-            <div className={`z-10 text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md border ${theme.accent}`}>
+            <div className={`z-10 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md border ${theme.accent}`}>
               {course.category}
             </div>
           </div>
         )}
 
         {/* Black "Sale!" Badge from screenshot */}
-        <div className="absolute top-2 right-2 bg-[#222222] text-white text-[11px] font-bold px-2.5 py-0.5 rounded shadow-sm z-20">
+        <div className="absolute top-2 right-2 bg-[#222222] text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded shadow-sm z-20">
           Sale!
         </div>
       </Link>
 
       {/* Course Title */}
-      <div className="space-y-2 mb-3">
+      <div className="space-y-1.5 mb-2.5 sm:mb-3">
         <Link to={`/courses/${course.slug}`}>
-          <h3 className="text-sm sm:text-base font-bold text-slate-800 hover:text-brand-600 transition-colors uppercase leading-snug line-clamp-2 min-h-[2.5rem]">
+          <h3 className="text-xs sm:text-base font-bold text-slate-800 hover:text-brand-600 transition-colors uppercase leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
             {course.title}
           </h3>
         </Link>
 
         {/* Pricing with Strike-through in US Dollars ($) */}
-        <div className="text-sm font-bold text-slate-900 flex items-center justify-center gap-2">
+        <div className="text-xs sm:text-sm font-bold text-slate-900 flex items-center justify-center gap-1.5 sm:gap-2">
           {Number(course.price || 0) > Number(course.discountPrice || course.price || 0) && (
-            <span className="text-xs text-slate-400 line-through font-normal">
+            <span className="text-[11px] sm:text-xs text-slate-400 line-through font-normal">
               ${Number(course.price || 0).toLocaleString('en-US')}.00
             </span>
           )}
-          <span className="text-slate-900 font-extrabold text-sm sm:text-base text-brand-600">
+          <span className="text-slate-900 font-extrabold text-xs sm:text-base text-brand-600">
             ${Number(course.discountPrice || course.price || 499).toLocaleString('en-US')}.00
           </span>
         </div>
       </div>
 
       {/* Action Buttons: Add to Cart & Quick Enroll */}
-      <div className="pt-2 flex items-center gap-2">
+      <div className="pt-1.5 sm:pt-2 flex items-center gap-1.5 sm:gap-2">
         <button
           onClick={handleAddToCart}
-          className={`flex-1 py-2.5 px-3 rounded-xl text-white font-bold text-xs shadow-md transition-all duration-200 ${
+          className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-white font-bold text-[11px] sm:text-xs shadow-md transition-all duration-200 ${
             isInCart(course._id)
               ? 'bg-emerald-600 hover:bg-emerald-700'
               : 'bg-[#FF5555] hover:bg-[#E64444]'
@@ -186,7 +190,7 @@ const CourseCard = ({ course }) => {
             }
             navigate('/checkout');
           }}
-          className="flex-1 py-2.5 px-3 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all duration-200"
+          className="flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-bold text-[11px] sm:text-xs shadow-md transition-all duration-200"
         >
           Enroll Now
         </button>
@@ -197,4 +201,3 @@ const CourseCard = ({ course }) => {
 };
 
 export default CourseCard;
-
