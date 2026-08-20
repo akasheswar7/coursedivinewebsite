@@ -75,18 +75,47 @@ export const AuthProvider = ({ children }) => {
     };
   };
 
-  // Strict Google Authentication - Requires existing registered user or formal registration
+  // Google One-Click OAuth Authentication & Auto-Registration
   const loginWithGoogle = async (googleProfile) => {
     try {
       const email = googleProfile.email.trim().toLowerCase();
+      const name = googleProfile.name?.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+      const avatar = googleProfile.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=071F3F&textColor=ffffff`;
+
       const db = JSON.parse(localStorage.getItem('cd_registered_users_db') || '[]');
-      const googleUser = db.find((u) => u.email.toLowerCase() === email);
+      let googleUser = db.find((u) => u.email.toLowerCase() === email);
 
       if (!googleUser) {
-        return {
-          success: false,
-          message: `No account found for "${email}". Please click "Create Student Account" to register first.`
+        // Automatically create and register new customer account in the database
+        googleUser = {
+          _id: 'usr_' + Date.now(),
+          name,
+          email,
+          avatar,
+          role: email.includes('admin') ? 'admin' : 'user',
+          authProvider: 'google',
+          phone: googleProfile.phone || '',
+          referralCode: 'CD' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+          registeredAt: new Date().toISOString(),
+          token: 'google_jwt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8)
         };
+        db.push(googleUser);
+        localStorage.setItem('cd_registered_users_db', JSON.stringify(db));
+
+        // Dispatch registration notification to coursedivine@gmail.com
+        if (typeof window !== 'undefined') {
+          const payload = new FormData();
+          payload.append('Student Name', name);
+          payload.append('Registered Email', email);
+          payload.append('Auth Provider', 'Google One-Click');
+          payload.append('_subject', `New Google Account Registration: ${name} (${email})`);
+          payload.append('_captcha', 'false');
+
+          fetch('https://formsubmit.co/ajax/coursedivine@gmail.com', {
+            method: 'POST',
+            body: payload
+          }).catch(() => null);
+        }
       }
 
       setUser(googleUser);
@@ -95,9 +124,10 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, user: googleUser };
     } catch (err) {
-      return { success: false, message: 'Authentication verification failed' };
+      return { success: false, message: 'Google authentication failed. Please try again.' };
     }
   };
+
 
 
   const register = async (name, email, password, phone, referralCode) => {
