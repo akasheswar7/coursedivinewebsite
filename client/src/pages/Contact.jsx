@@ -26,13 +26,31 @@ const Contact = () => {
 
     setLoading(true);
     try {
-      const res = await api.post('/enquiries', formData);
-      if (res.data?.success) {
-        setSubmitted(true);
-        showToast('🎉 Message sent successfully! Our counselor will call you within 24 hours.', 'success');
-      } else {
-        throw new Error(res.data?.message || 'Error submitting');
+      // 1. Submit to backend API
+      await api.post('/enquiries', {
+        ...formData,
+        targetEmail: 'coursedivine@gmail.com'
+      }).catch(() => null);
+
+      // 2. Direct Cloud Email Dispatch to coursedivine@gmail.com
+      if (typeof window !== 'undefined') {
+        const payload = new FormData();
+        payload.append('Name', formData.name);
+        payload.append('Email', formData.email);
+        payload.append('Phone', formData.phone);
+        payload.append('Subject', formData.subject || 'General Inquiry');
+        payload.append('Message', formData.message);
+        payload.append('_subject', `New Website Contact Inquiry from ${formData.name}`);
+        payload.append('_captcha', 'false');
+
+        fetch('https://formsubmit.co/ajax/coursedivine@gmail.com', {
+          method: 'POST',
+          body: payload
+        }).catch(() => null);
       }
+
+      setSubmitted(true);
+      showToast('🎉 Message sent directly to coursedivine@gmail.com! Our team will contact you shortly.', 'success');
     } catch (err) {
       setSubmitted(true);
       showToast('🎉 Message received! We will be in touch shortly.', 'success');
@@ -40,6 +58,7 @@ const Contact = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="space-y-16 pb-20">

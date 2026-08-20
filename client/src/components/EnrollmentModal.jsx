@@ -123,6 +123,25 @@ const EnrollmentModal = ({ isOpen, onClose, course, onEnrollmentSuccess }) => {
       };
       localStorage.setItem(orderKey, JSON.stringify([newOrder, ...existingOrders]));
 
+      // 3. Dispatch Notification to coursedivine@gmail.com
+      if (typeof window !== 'undefined') {
+        const payload = new FormData();
+        payload.append('Student Name', formData.name);
+        payload.append('Student Email', targetEmail);
+        payload.append('Phone', formData.phone);
+        payload.append('Enrolled Course', course.title);
+        payload.append('Amount ($ USD)', `$${details.amount}.00`);
+        payload.append('Batch Type', formData.batchType);
+        payload.append('Transaction ID', details.transactionId);
+        payload.append('_subject', `New Course Enrollment: ${formData.name} - ${course.title} ($${details.amount})`);
+        payload.append('_captcha', 'false');
+
+        fetch('https://formsubmit.co/ajax/coursedivine@gmail.com', {
+          method: 'POST',
+          body: payload
+        }).catch(() => null);
+      }
+
       setTransactionDetails(details);
       setIsSuccess(true);
       setProcessing(false);
@@ -132,6 +151,7 @@ const EnrollmentModal = ({ isOpen, onClose, course, onEnrollmentSuccess }) => {
         spread: 80,
         origin: { y: 0.6 }
       });
+
 
       showToast(`🎉 Enrollment Confirmed for ${course.title}!`, 'success');
       if (onEnrollmentSuccess) {

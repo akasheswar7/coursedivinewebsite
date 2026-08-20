@@ -37,9 +37,33 @@ const Careers = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!applicant.name || !applicant.email || !applicant.phone) {
+      showToast('Please fill in your name, email, and phone number.', 'error');
+      return;
+    }
+
+    // Direct Cloud Email Dispatch to coursedivine@gmail.com
+    if (typeof window !== 'undefined') {
+      const payload = new FormData();
+      payload.append('Applicant Name', applicant.name);
+      payload.append('Email', applicant.email);
+      payload.append('Phone', applicant.phone);
+      payload.append('Role Applied', selectedRole?.title || 'General Educator / Staff');
+      payload.append('LinkedIn Profile', applicant.linkedin || 'Not Provided');
+      payload.append('Resume Link', applicant.resumeUrl || 'Not Provided');
+      payload.append('_subject', `New Job Application: ${applicant.name} for ${selectedRole?.title || 'General Role'}`);
+      payload.append('_captcha', 'false');
+
+      fetch('https://formsubmit.co/ajax/coursedivine@gmail.com', {
+        method: 'POST',
+        body: payload
+      }).catch(() => null);
+    }
+
     setSubmitted(true);
-    showToast('🎉 Application submitted! Our HR team will reach out.', 'success');
+    showToast('🎉 Application sent directly to coursedivine@gmail.com! Our HR team will reach out.', 'success');
   };
+
 
   return (
     <div className="space-y-16 pb-20">

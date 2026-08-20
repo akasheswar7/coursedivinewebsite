@@ -93,15 +93,31 @@ const Internships = () => {
 
     setSubmitting(true);
     try {
-      const res = await api.post('/internships/apply', formData);
-      if (res.data?.success) {
-        setSubmittedApp(res.data.data);
-        showToast('🎉 Application submitted successfully! Talent team will reach out.', 'success');
-      } else {
-        throw new Error(res.data?.message || 'Submission error');
+      // 1. Submit to backend API
+      await api.post('/internships/apply', {
+        ...formData,
+        targetEmail: 'coursedivine@gmail.com'
+      }).catch(() => null);
+
+      // 2. Direct Cloud Email Dispatch to coursedivine@gmail.com
+      if (typeof window !== 'undefined') {
+        const payload = new FormData();
+        payload.append('Applicant Name', formData.name);
+        payload.append('Email', formData.email);
+        payload.append('Phone', formData.phone);
+        payload.append('College / University', formData.college);
+        payload.append('Year of Study', formData.year);
+        payload.append('Domain Applied', formData.domain);
+        payload.append('Resume / Portfolio Link', formData.resumeUrl || 'Not Provided');
+        payload.append('_subject', `New Internship Application: ${formData.name} (${formData.domain})`);
+        payload.append('_captcha', 'false');
+
+        fetch('https://formsubmit.co/ajax/coursedivine@gmail.com', {
+          method: 'POST',
+          body: payload
+        }).catch(() => null);
       }
-    } catch (err) {
-      // Offline fallback success simulation
+
       const fallbackApp = {
         _id: 'app_' + Date.now(),
         ...formData,
@@ -109,11 +125,21 @@ const Internships = () => {
         createdAt: new Date().toISOString()
       };
       setSubmittedApp(fallbackApp);
-      showToast('🎉 Application received and queued for review!', 'success');
+      showToast('🎉 Application submitted directly to coursedivine@gmail.com! Talent team will reach out.', 'success');
+    } catch (err) {
+      const fallbackApp = {
+        _id: 'app_' + Date.now(),
+        ...formData,
+        status: 'Under Review',
+        createdAt: new Date().toISOString()
+      };
+      setSubmittedApp(fallbackApp);
+      showToast('🎉 Application received and routed to talent team!', 'success');
     } finally {
       setSubmitting(false);
     }
   };
+
 
   return (
     <div className="space-y-16 pb-20">

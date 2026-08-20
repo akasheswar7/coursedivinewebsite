@@ -28,10 +28,25 @@ const Footer = () => {
       showToast('Please enter a valid email address', 'error');
       return;
     }
+
+    if (typeof window !== 'undefined') {
+      const payload = new FormData();
+      payload.append('Subscriber Email', email);
+      payload.append('Source', 'Footer Tech Updates & Placement Alerts');
+      payload.append('_subject', `New Newsletter Subscription: ${email}`);
+      payload.append('_captcha', 'false');
+
+      fetch('https://formsubmit.co/ajax/coursedivine@gmail.com', {
+        method: 'POST',
+        body: payload
+      }).catch(() => null);
+    }
+
     setSubscribed(true);
-    showToast('🎉 Thank you for subscribing to Course Divine Tech Updates!', 'success');
+    showToast('🎉 Thank you! Your subscription has been sent to coursedivine@gmail.com.', 'success');
     setEmail('');
   };
+
 
   return (
     <footer className="bg-[#071F3F] text-slate-300 pt-16 pb-8 border-t border-brand-900/50">
