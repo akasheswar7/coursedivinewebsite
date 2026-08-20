@@ -7,6 +7,7 @@ import { NotificationProvider } from './context/NotificationContext';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import LeadCaptureModal from './components/LeadCaptureModal';
 
 // Pages
 import Home from './pages/Home';
@@ -146,7 +147,9 @@ function App() {
                   </Routes>
                 </main>
                 <Footer />
+                <LeadCaptureModal />
               </div>
+
             </NotificationProvider>
           </CartProvider>
         </AuthProvider>
