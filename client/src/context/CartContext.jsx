@@ -4,8 +4,12 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
-    const saved = localStorage.getItem('cd_cart');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('cd_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
 
   const [coupon, setCoupon] = useState(null);

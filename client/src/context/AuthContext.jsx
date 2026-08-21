@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
 
+const safeJsonParse = (str, fallback = null) => {
+  try {
+    return str ? JSON.parse(str) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -15,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 
       if (token && storedUser) {
         try {
-          setUser(JSON.parse(storedUser));
+          setUser(safeJsonParse(storedUser));
           const res = await api.get('/auth/me');
           if (res.data?.success) {
             setUser(res.data.data);
@@ -23,7 +31,7 @@ export const AuthProvider = ({ children }) => {
           }
         } catch (err) {
           if (storedUser) {
-            setUser(JSON.parse(storedUser));
+            setUser(safeJsonParse(storedUser));
           }
         }
       }
@@ -51,8 +59,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     // Check local database for registered customer accounts
-    const db = JSON.parse(localStorage.getItem('cd_registered_users_db') || '[]');
-    const existingUser = db.find((u) => u.email.toLowerCase() === cleanEmail);
+    const db = safeJsonParse(localStorage.getItem('cd_registered_users_db'), []);
+    const existingUser = db.find((u) => u.email && u.email.toLowerCase() === cleanEmail);
 
     if (existingUser) {
       if (existingUser.password === password) {
@@ -82,8 +90,8 @@ export const AuthProvider = ({ children }) => {
       const name = googleProfile.name?.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
       const avatar = googleProfile.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=071F3F&textColor=ffffff`;
 
-      const db = JSON.parse(localStorage.getItem('cd_registered_users_db') || '[]');
-      let googleUser = db.find((u) => u.email.toLowerCase() === email);
+      const db = safeJsonParse(localStorage.getItem('cd_registered_users_db'), []);
+      let googleUser = db.find((u) => u.email && u.email.toLowerCase() === email);
 
       if (!googleUser) {
         // Automatically create and register new customer account in the database
@@ -147,8 +155,8 @@ export const AuthProvider = ({ children }) => {
       // Local database fallback
     }
 
-    const db = JSON.parse(localStorage.getItem('cd_registered_users_db') || '[]');
-    const userExists = db.some((u) => u.email.toLowerCase() === cleanEmail);
+    const db = safeJsonParse(localStorage.getItem('cd_registered_users_db'), []);
+    const userExists = db.some((u) => u.email && u.email.toLowerCase() === cleanEmail);
 
     if (userExists) {
       return { success: false, message: 'An account with this email already exists. Please log in.' };
