@@ -1,4 +1,26 @@
 import axios from 'axios';
+import {
+  nitheeshKumarImg,
+  cmaCgmLogo,
+  yerrawarVasaviImg,
+  airaInteriorsLogo,
+  arigalaHemaImg,
+  niitFoundationLogo,
+  sanjoyKumarSamalImg,
+  magmaHdiLogo,
+  basagallaNaveenImg,
+  venusEngineeringLogo,
+  uppalaSaiChandhuImg,
+  bigBullLogo,
+  vivekSharmaPatelImg,
+  infosysLogo,
+  sailaxmanBugathaImg,
+  tcsLogo,
+  amitPreetSinghImg,
+  wiproLogo,
+  sivaPrasadPatroImg,
+  centuryPulpPaperLogo
+} from '../assets/placements';
 
 // In-Memory Fallback Seed Store with All Verified Course Divine Courses & US Dollars ($)
 export const fallbackStore = {
@@ -1001,9 +1023,9 @@ export const fallbackStore = {
       course: 'AUTO CAD',
       salaryPackage: '6.5 LPA',
       year: 2026,
-      studentAvatar: '/placements/nitheesh_kumar.png',
-      avatar: '/placements/nitheesh_kumar.png',
-      companyLogo: '/placements/cma_cgm.png',
+      studentAvatar: nitheeshKumarImg,
+      avatar: nitheeshKumarImg,
+      companyLogo: cmaCgmLogo,
       testimonial: 'Course Divine AutoCAD training gave me deep industry drafting skills that helped me secure the Management Trainee role at CMA CGM.'
     },
     {
@@ -1017,9 +1039,9 @@ export const fallbackStore = {
       course: 'STAAD PRO',
       salaryPackage: '5.8 LPA',
       year: 2026,
-      studentAvatar: '/placements/yerrawar_vasavi.png',
-      avatar: '/placements/yerrawar_vasavi.png',
-      companyLogo: '/placements/aira_interiors.png',
+      studentAvatar: yerrawarVasaviImg,
+      avatar: yerrawarVasaviImg,
+      companyLogo: airaInteriorsLogo,
       testimonial: 'The hands-on structural and design modeling in STAAD Pro was instrumental in cracking my interview at Aira Interiors.'
     },
     {
@@ -1033,9 +1055,9 @@ export const fallbackStore = {
       course: 'Digital Marketing',
       salaryPackage: '6.0 LPA',
       year: 2026,
-      studentAvatar: '/placements/arigala_hema.png',
-      avatar: '/placements/arigala_hema.png',
-      companyLogo: '/placements/niit_foundation.png',
+      studentAvatar: arigalaHemaImg,
+      avatar: arigalaHemaImg,
+      companyLogo: niitFoundationLogo,
       testimonial: 'Comprehensive digital marketing strategies and live campaign management at Course Divine prepared me thoroughly to become an IT Trainer at NIIT Foundation.'
     },
     {
@@ -1049,9 +1071,9 @@ export const fallbackStore = {
       course: 'Data Science',
       salaryPackage: '8.5 LPA',
       year: 2026,
-      studentAvatar: '/placements/sanjoy_kumar_samal.png',
-      avatar: '/placements/sanjoy_kumar_samal.png',
-      companyLogo: '/placements/magma_hdi.png',
+      studentAvatar: sanjoyKumarSamalImg,
+      avatar: sanjoyKumarSamalImg,
+      companyLogo: magmaHdiLogo,
       testimonial: 'Learning data science analytics and statistical automation gave me a competitive edge for the Assistant Manager position at Magma HDI.'
     },
     {
@@ -1065,9 +1087,9 @@ export const fallbackStore = {
       course: 'STAAD PRO E TAB',
       salaryPackage: '7.2 LPA',
       year: 2026,
-      studentAvatar: '/placements/basagalla_naveen.png',
-      avatar: '/placements/basagalla_naveen.png',
-      companyLogo: '/placements/venus_engineering.png',
+      studentAvatar: basagallaNaveenImg,
+      avatar: basagallaNaveenImg,
+      companyLogo: venusEngineeringLogo,
       testimonial: 'The combined STAAD Pro and ETABS design curriculum provided real-world structural modeling experience needed for Venas Engineering Consultants.'
     },
     {
@@ -1081,9 +1103,9 @@ export const fallbackStore = {
       course: 'AUTO CAD',
       salaryPackage: '5.5 LPA',
       year: 2026,
-      studentAvatar: '/placements/uppala_sai_chandhu.png',
-      avatar: '/placements/uppala_sai_chandhu.png',
-      companyLogo: '/placements/big_bull.png',
+      studentAvatar: uppalaSaiChandhuImg,
+      avatar: uppalaSaiChandhuImg,
+      companyLogo: bigBullLogo,
       testimonial: 'The discipline, technical problem solving, and analytical foundation I gained at Course Divine helped me excel at Big Bull.'
     },
     {
@@ -1097,9 +1119,9 @@ export const fallbackStore = {
       course: 'AI & ML',
       salaryPackage: '16.5 LPA',
       year: 2026,
-      studentAvatar: '/placements/vivek_sharma_patel.png',
-      avatar: '/placements/vivek_sharma_patel.png',
-      companyLogo: '/placements/infosys.png',
+      studentAvatar: vivekSharmaPatelImg,
+      avatar: vivekSharmaPatelImg,
+      companyLogo: infosysLogo,
       testimonial: 'The advanced AI & Machine Learning curriculum and deep architectural case studies helped me transition into an Infrastructure Architect role at Infosys.'
     },
     {
@@ -1113,9 +1135,9 @@ export const fallbackStore = {
       course: 'Cybersecurity',
       salaryPackage: '7.5 LPA',
       year: 2026,
-      studentAvatar: '/placements/sailaxman_bugatha.png',
-      avatar: '/placements/sailaxman_bugatha.png',
-      companyLogo: '/placements/tcs.png',
+      studentAvatar: sailaxmanBugathaImg,
+      avatar: sailaxmanBugathaImg,
+      companyLogo: tcsLogo,
       testimonial: 'Practical ethical hacking and cybersecurity labs at Course Divine provided the exact domain depth required to train and lead at TCS.'
     },
     {
@@ -1129,9 +1151,9 @@ export const fallbackStore = {
       course: 'Data Analytics',
       salaryPackage: '6.8 LPA',
       year: 2026,
-      studentAvatar: '/placements/amit_preet_singh.png',
-      avatar: '/placements/amit_preet_singh.png',
-      companyLogo: '/placements/wipro.png',
+      studentAvatar: amitPreetSinghImg,
+      avatar: amitPreetSinghImg,
+      companyLogo: wiproLogo,
       testimonial: 'Hands-on SQL, Python, and Power BI dashboards in the Data Analytics course made my interview rounds at Wipro seamless.'
     },
     {
@@ -1145,9 +1167,9 @@ export const fallbackStore = {
       course: 'Project Management Professional (PMP)',
       salaryPackage: '8.2 LPA',
       year: 2026,
-      studentAvatar: '/placements/siva_prasad_patro.png',
-      avatar: '/placements/siva_prasad_patro.png',
-      companyLogo: '/placements/century_pulp_paper.png',
+      studentAvatar: sivaPrasadPatroImg,
+      avatar: sivaPrasadPatroImg,
+      companyLogo: centuryPulpPaperLogo,
       testimonial: 'The PMP framework and engineering project management workflows from Course Divine gave me the leadership skills to excel at Century Pulp & Paper.'
     }
   ],
