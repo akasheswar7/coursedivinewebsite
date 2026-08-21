@@ -42,14 +42,19 @@ import {
   CreditCard,
   Lock,
   ExternalLink,
-  Quote
+  Quote,
+  Eye,
+  Activity,
+  Box,
+  Sliders,
+  Workflow
 } from 'lucide-react';
 import api, { fallbackStore } from '../services/api';
 import { useNotification } from '../context/NotificationContext';
 import EnrollmentModal from '../components/EnrollmentModal';
 import VideoModal from '../components/VideoModal';
 
-const AnimatedCounter = ({ target, duration = 2200, suffix = '', decimals = 0 }) => {
+const AnimatedCounter = ({ target, duration = 6500, suffix = '', decimals = 0 }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -59,7 +64,8 @@ const AnimatedCounter = ({ target, duration = 2200, suffix = '', decimals = 0 })
     const updateCount = (currentTime) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = 1 - Math.pow(1 - progress, 4);
+      // Very smooth, luxurious cubic ease-out
+      const easeProgress = 1 - Math.pow(1 - progress, 2.5);
       const currentVal = easeProgress * end;
 
       setCount(currentVal);
@@ -87,10 +93,12 @@ const Home = () => {
   const [courses, setCourses] = useState(fallbackStore.courses);
   const { showToast } = useNotification();
 
-
   const [enrollingCourse, setEnrollingCourse] = useState(null);
   const [selectedVideoTestimonial, setSelectedVideoTestimonial] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [hoveredProjectId, setHoveredProjectId] = useState(null);
+  const [projectModalTab, setProjectModalTab] = useState('overview');
+  const [heroVisualTab, setHeroVisualTab] = useState('cad');
 
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
@@ -305,81 +313,158 @@ const Home = () => {
   const showcaseProjects = [
     {
       id: 'p1',
-      title: '3D Autonomous Drone Frame & Aerodynamic Chassis',
+      title: '3D Autonomous Drone Frame & Aerodynamic EV Chassis',
+      shortTitle: 'Autonomous Drone CAD & Chassis',
       domain: 'Engineering & Design',
-      category: 'SolidWorks',
+      category: 'SolidWorks Project',
       image: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=800&q=80',
       description: 'Parametric CAD modeling and assembly of a high-speed surveillance drone with optimized strength-to-weight ratio and generative weight reduction.',
-      tools: ['SolidWorks', 'CSWA CAD', 'Sheet Metal', 'Photoview 360', 'Generative Design'],
+      detailedDescription: 'In this production-grade capstone, you will architect a complete industrial UAV quadcopter assembly from initial 2D schematics to 3D parametric modeling, sheet metal brackets, generative lattice weight reduction, and GD&T production drawings compliant with CSWA/CSWP standards.',
+      challenge: 'Minimizing aerodynamic parasitic drag while ensuring the carbon fiber arms and payload gimbals withstand sudden motor torque shocks and resonance vibrations.',
+      tools: ['SolidWorks 2026', 'CSWA CAD', 'Sheet Metal', 'Photoview 360', 'Generative Design', 'GD&T Standards'],
+      workflow: [
+        { step: '01', title: 'Parametric 3D Wireframing', desc: 'Constructing robust base sketches and primary reference planes with parametric dimension constraints.' },
+        { step: '02', title: 'Sub-Assembly & Mates', desc: 'Assembling 48+ custom components with concentric, coincident, and mechanical gear mates in SolidWorks.' },
+        { step: '03', title: 'Generative Lattice Optimization', desc: 'Applying topology optimization to remove 35% non-critical volume while preserving structural stiffness.' },
+        { step: '04', title: 'Production 2D Drafting & BOM', desc: 'Exporting industry-ready multi-view fabrication drawings with bill of materials and geometric tolerances.' }
+      ],
+      keyDeliverables: [
+        'Complete 3D Parametric CAD Assembly (.SLDASM)',
+        'Bill of Materials (BOM) with material density specs',
+        'Fabrication-ready 2D Drawings with GD&T',
+        'Photorealistic 4K Renderings in Photoview 360'
+      ],
       courseLink: '/courses/solidworks-3d-cad-mechanical-design-certified-course',
       courseName: 'SolidWorks 3D CAD Certified Course',
-      metrics: '35% Weight Reduction, CSWA Certified Project'
+      metrics: '35% Weight Reduction, CSWA Certified Benchmark',
+      previewBadge: '3D CAD Assembly • 48 Parts'
     },
     {
       id: 'p2',
       title: 'Commercial Aircraft Wing Structural & Aerodynamic Stress Simulation',
+      shortTitle: 'Aircraft Wing FEA & CFD Simulation',
       domain: 'Engineering & Design',
-      category: 'ANSYS',
+      category: 'ANSYS Project',
       image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80',
       description: 'Finite Element Analysis (FEA) and CFD Fluent boundary simulation assessing von Mises stresses, deformation, and turbulence across varying altitudes.',
-      tools: ['ANSYS Workbench', 'Static Structural', 'Fluent CFD', 'Mesh Quality Analyzer'],
+      detailedDescription: 'Simulate high-altitude aerodynamic forces and structural resilience on a commercial transonic airfoil using ANSYS Workbench. Learn polyhedral meshing, boundary layer inflation, Navier-Stokes fluid modeling, and structural static/modal stress analysis.',
+      challenge: 'Accurately resolving boundary layer separation shocks and preventing flutter deformation under high-g aerodynamic load factors (2.5g pull-up maneuver).',
+      tools: ['ANSYS Workbench', 'Static Structural FEA', 'Fluent CFD', 'Polyhedral Mesher', 'Post-Processing CFD'],
+      workflow: [
+        { step: '01', title: 'CAD Cleanup & Fluid Domain', desc: 'Extracting clean computational fluid domain and establishing far-field pressure boundaries.' },
+        { step: '02', title: 'Inflation Layer Meshing', desc: 'Generating structured boundary layer prism layers (y+ ~ 1) with orthogonal mesh quality > 0.85.' },
+        { step: '03', title: 'CFD Fluent Navier-Stokes Run', desc: 'Executing turbulent k-omega SST flow simulations at Mach 0.78 with lift/drag convergence monitoring.' },
+        { step: '04', title: 'FEA One-Way Fluid-Structure', desc: 'Transferring aerodynamic surface pressures onto solid wing spars to calculate von Mises stress and safety margins.' }
+      ],
+      keyDeliverables: [
+        'FEA Static Structural & Modal Vibration Report',
+        'Lift & Drag Coefficient Polar Curves (Cl vs Cd)',
+        'Velocity Vector & Pressure Contour Heatmaps',
+        'Aviation Safety Factor Compliance Certificate'
+      ],
       courseLink: '/courses/ansys-fea-cfd-simulation-engineering-certified-course',
       courseName: 'ANSYS FEA & CFD Certified Course',
-      metrics: 'Validated Safety Factor 2.4, 0.02mm Deflection Limit'
+      metrics: 'Safety Factor 2.4, 0.02mm Deflection Benchmark',
+      previewBadge: 'CFD & FEA • Fluent Multiphysics'
     },
     {
       id: 'p3',
-      title: 'Real-Time Enterprise Churn Intelligence & Dashboard',
+      title: 'Real-Time Enterprise Churn Intelligence & Executive BI Dashboard',
+      shortTitle: 'AI Churn Intelligence & BI Dashboard',
       domain: 'Data & AI',
-      category: 'Data Science',
+      category: 'Data Dashboard',
       image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
       description: 'End-to-end predictive machine learning pipeline identifying at-risk subscribers and visualizing retention levers in an interactive dashboard.',
-      tools: ['Python', 'Pandas', 'Scikit-Learn', 'Power BI', 'Streamlit', 'SQL'],
+      detailedDescription: 'Build an enterprise analytics hub that connects raw transactional data from cloud databases into an automated ML churn scoring model and a live interactive executive Power BI dashboard with automated alerts and what-if scenario forecasting.',
+      challenge: 'Handling imbalanced subscriber retention datasets (93:7 non-churn vs churn) and generating low-latency real-time API scoring for customer success teams.',
+      tools: ['Python', 'Pandas', 'Scikit-Learn', 'XGBoost', 'Power BI', 'DAX', 'SQL', 'FastAPI'],
+      workflow: [
+        { step: '01', title: 'Data Pipeline & Feature Store', desc: 'Extracting 500k+ customer transactions via SQL and engineering RFM (Recency, Frequency, Monetary) indicators.' },
+        { step: '02', title: 'Predictive Model Training', desc: 'Training XGBoost classifier with SMOTE oversampling, hyperparameter tuning, and SHAP explainability values.' },
+        { step: '03', title: 'FastAPI Microservice', desc: 'Deploying model scoring endpoint returning churn probability and top retention risk factors in <50ms.' },
+        { step: '04', title: 'Executive Power BI Dashboard', desc: 'Designing interactive BI visuals with DAX measures, dynamic slicers, revenue impact simulators, and automated triggers.' }
+      ],
+      keyDeliverables: [
+        'Interactive Multi-Page Power BI Dashboard (.PBIX)',
+        'Trained XGBoost Machine Learning Model with SHAP',
+        'Real-Time Scoring REST API with Docker container',
+        'Executive Revenue Protection Summary Deck'
+      ],
       courseLink: '/courses/data-science-ai-masterclass-certified-course',
       courseName: 'Data Science & AI Masterclass',
-      metrics: '94.2% ROC-AUC Accuracy, Real-time API Integration'
+      metrics: '94.2% ROC-AUC Accuracy, Real-Time API',
+      previewBadge: 'Power BI + ML • 500k Records'
     },
     {
       id: 'p4',
-      title: '12x ROAS Omnichannel Growth & Conversion Funnel',
+      title: '12x ROAS Omnichannel Growth & High-Conversion Funnel',
+      shortTitle: '12x ROAS Performance Marketing Campaign',
       domain: 'Digital Marketing',
-      category: 'Digital Marketing',
+      category: 'Marketing Campaign',
       image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
       description: 'Complete performance marketing campaign with high-converting landing page copywriting, Google Search intent ads, and retargeting workflows.',
-      tools: ['Google Ads', 'Meta Ads Manager', 'GA4 Analytics', 'Looker Studio', 'SEMrush'],
+      detailedDescription: 'Design and deploy a full-funnel digital marketing engine. From keyword intent clustering and ad copy psychology to Google Performance Max campaigns, Meta dynamic retargeting, and Google Analytics 4 (GA4) attribution modeling.',
+      challenge: 'Scaling monthly customer acquisition while lowering Cost Per Lead (CPL) by 40% across saturated high-competition search verticals.',
+      tools: ['Google Ads (PMax)', 'Meta Ads Manager', 'GA4 Analytics', 'Looker Studio', 'SEMrush', 'Conversion Copywriting'],
+      workflow: [
+        { step: '01', title: 'Intent Keyword Clustering', desc: 'Mining high-commercial-intent long-tail keywords using SEMrush and architecting exact-match ad groups.' },
+        { step: '02', title: 'High-Converting Landing Pages', desc: 'Writing direct-response copywriting and wireframing frictionless mobile-first conversion pages.' },
+        { step: '03', title: 'Multi-Channel Ad Scaling', desc: 'Configuring Google Search, YouTube Ads, and Meta Dynamic Product Ads with smart bidding algorithms.' },
+        { step: '04', title: 'Attribution & ROAS Analytics', desc: 'Building custom GA4 event funnels and Looker Studio live dashboards for real-time ROI tracking.' }
+      ],
+      keyDeliverables: [
+        'Complete Multi-Channel Ad Campaign Architecture',
+        'High-Converting Landing Page Wireframe & Copy Deck',
+        'Live Looker Studio Real-Time Attribution Dashboard',
+        'A/B Creative Testing Matrix & Ad Spend Allocation Plan'
+      ],
       courseLink: '/courses/digital-marketing-growth-mastery-certified-course',
       courseName: 'Digital Marketing & Growth Mastery',
-      metrics: '12.4x Return On Ad Spend (ROAS), 18k Leads Captured'
+      metrics: '12.4x ROAS, 18,000+ Verified Leads',
+      previewBadge: 'Google & Meta Ads • 12.4x ROAS'
     },
     {
       id: 'p5',
-      title: 'AI Resume Scanner & ATS Score Optimizer Platform',
+      title: 'AI Algorithmic Trading Bot & Autonomous Resume ATS Matcher',
+      shortTitle: 'AI Autonomous Agent & Python Engine',
       domain: 'Software & Web',
-      category: 'Python',
+      category: 'Python Project',
       image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
       description: 'Full-stack AI web application parsing resumes, matching skills against job descriptions, and providing automated bullet point suggestions.',
-      tools: ['Python', 'FastAPI', 'React', 'OpenAI API', 'Tailwind CSS', 'PostgreSQL'],
+      detailedDescription: 'Develop a high-performance Python application featuring autonomous web scraping, LLM-powered vector embeddings for ATS resume matching, and algorithmic signal processing for real-time financial market trend alerts.',
+      challenge: 'Processing dense multi-page PDF documents and parsing messy candidate skills against complex enterprise job requirements in sub-second response times.',
+      tools: ['Python 3.12', 'FastAPI', 'Pandas', 'OpenAI API', 'LangChain', 'ChromaDB', 'PostgreSQL', 'Docker'],
+      workflow: [
+        { step: '01', title: 'Async Ingestion & Scraping', desc: 'Building asynchronous Python scraping and PDF extraction engines with PyMuPDF and regex sanitizers.' },
+        { step: '02', title: 'Vector Embeddings & RAG', desc: 'Generating dense vector representations of applicant resumes and calculating cosine similarity in ChromaDB.' },
+        { step: '03', title: 'LLM Scoring & ATS Feedback', desc: 'Using LangChain and OpenAI structured outputs to generate precise ATS gap analysis and bullet improvements.' },
+        { step: '04', title: 'Dockerized REST API Service', desc: 'Deploying high-throughput FastAPI endpoints with automated Swagger docs and CI/CD test automation.' }
+      ],
+      keyDeliverables: [
+        'Production-Grade Python & FastAPI Backend Codebase',
+        'RAG Vector Search Engine with Vector Database',
+        'Interactive Testing UI with Streamlit/React',
+        'Automated CI/CD Pipeline & Docker Container'
+      ],
       courseLink: '/courses/python-programming-data-analytics-certified-course',
       courseName: 'Python Programming & Data Analytics',
-      metrics: '10,000+ Resumes Processed, Sub-200ms Latency'
-    },
-    {
-      id: 'p6',
-      title: 'FinTech Banking SuperApp & Design System',
-      domain: 'Design & UI/UX',
-      category: 'UI/UX',
-      image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80',
-      description: 'Comprehensive 80+ screen mobile banking application design system with auto-layout components, WCAG AAA accessibility, and interactive prototypes.',
-      tools: ['Figma', 'Design Systems', 'Micro-Interactions', 'User Testing', 'FigJam'],
-      courseLink: '/courses/ui-ux-design-course-certified-course',
-      courseName: 'UI/UX Design Masterclass',
-      metrics: '100% Component Tokenized, 4.8/5 Usability Score'
+      metrics: '10,000+ Resumes Processed, Sub-200ms API',
+      previewBadge: 'Python 3.12 + FastAPI + AI'
     }
+  ];
+
+  const projectCategoryTabs = [
+    { label: 'All Projects', value: 'All' },
+    { label: 'SolidWorks Project', value: 'SolidWorks Project' },
+    { label: 'ANSYS Project', value: 'ANSYS Project' },
+    { label: 'Data Dashboard', value: 'Data Dashboard' },
+    { label: 'Marketing Campaign', value: 'Marketing Campaign' },
+    { label: 'Python Project', value: 'Python Project' }
   ];
 
   const filteredProjects = showcaseProjects.filter((p) => {
     if (projectCategory === 'All') return true;
-    return p.category === projectCategory || p.domain.includes(projectCategory);
+    return p.category === projectCategory;
   });
 
   const trainers = [
@@ -521,113 +606,336 @@ const Home = () => {
   return (
     <div className="space-y-24 pb-16 font-sans bg-[#F8FAFD] text-slate-800 selection:bg-brand-500 selection:text-white">
       
-      {/* 1. HERO SECTION: Bright Classroom Hero with High-Contrast Text (Exact User Design) */}
-      <section className="relative min-h-[560px] lg:min-h-[640px] flex items-center overflow-hidden bg-white border-b border-slate-200">
+      {/* 1. HERO SECTION: Custom Course Divine Animated Hero with Real Background Image */}
+      <section className="relative min-h-[640px] lg:min-h-[720px] flex items-center overflow-hidden bg-white border-b border-slate-200">
         
-        {/* Bright Grayscale Classroom Photo with Student on Right */}
+        {/* Real Classroom & Student High-Res Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-no-repeat bg-[center_right] sm:bg-right opacity-90 scale-100 transition-transform duration-700 grayscale contrast-105 brightness-110"
+          className="absolute inset-0 bg-cover bg-no-repeat bg-[center_right] sm:bg-right opacity-85 contrast-105 brightness-105 scale-100"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=2560&q=95')`
           }}
         />
         
-        {/* Left-to-Right Soft Fade: Solid White on Left for Crystal Clear Text, Transparent on Right for Student */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent lg:w-3/5 pointer-events-none" />
-        <div className="absolute inset-y-0 left-0 w-full sm:w-1/2 bg-white/40 pointer-events-none" />
+        {/* Dynamic Smooth Fade Gradient: Solid White/Glass on Left for crisp text, soft fade on right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/92 to-white/40 lg:to-white/20 pointer-events-none" />
+        <div className="absolute inset-y-0 left-0 w-full sm:w-1/2 bg-white/50 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-12 sm:py-16">
-          <div className="max-w-2xl space-y-6">
+        {/* Subtle Ambient Background Mesh Grids & Glows */}
+        <div className="absolute inset-0 bg-[radial-gradient(#0F62FE_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.06] pointer-events-none" />
+        <div className="absolute -top-32 -right-32 w-[550px] h-[550px] bg-gradient-to-br from-blue-400/20 to-sky-300/10 rounded-full blur-3xl pointer-events-none animate-subtle-pulse" />
+        <div className="absolute top-1/2 -left-32 w-[450px] h-[450px] bg-gradient-to-tr from-[#0F62FE]/15 to-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-12 lg:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             
-            {/* Top Sub-tag */}
-            <div className="text-xs sm:text-sm font-black tracking-widest text-slate-700 uppercase flex items-center gap-2">
-              <span className="w-6 h-0.5 bg-[#0F62FE]" />
-              IT'S YOUR TIME
-            </div>
-
-            {/* Main Headline */}
-            <div className="space-y-3">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-[62px] font-black tracking-tight text-[#0F62FE] leading-[1.08]">
-                ADVANCE YOUR SKILLS
-              </h1>
-              <div className="w-28 h-1 bg-slate-800 rounded-full" />
-            </div>
-
-            {/* Subheading */}
-            <p className="text-base sm:text-lg font-bold text-slate-800 leading-relaxed max-w-xl">
-              Unlock Your Future: Explore Expert-Led Online Training & Internships in IT, Design, and Beyond — Start Your Journey Today!
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="pt-2 flex flex-wrap items-center gap-3.5">
-              <Link
-                to="/courses"
-                className="px-7 py-3.5 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-extrabold text-sm shadow-xl shadow-blue-500/25 transition-all duration-200 flex items-center gap-2 transform hover:-translate-y-0.5"
-              >
-                <BookOpen className="w-4 h-4" />
-                Explore Courses
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              <Link
-                to="/internships"
-                className="px-7 py-3.5 rounded-xl bg-[#071F3F] hover:bg-slate-800 text-white font-extrabold text-sm shadow-lg transition-all duration-200 flex items-center gap-2 transform hover:-translate-y-0.5"
-              >
-                <Briefcase className="w-4 h-4 text-emerald-400" />
-                Explore Internships
-              </Link>
-            </div>
-
-            {/* Call Us Today Pill Badge */}
-            <div className="pt-2">
-              <a
-                href="tel:+919100348679"
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#0F62FE] to-[#0052CC] hover:from-blue-600 hover:to-blue-800 text-white font-black text-xs sm:text-sm shadow-xl shadow-blue-500/30 transition-transform duration-200 hover:scale-105"
-              >
-                <span className="text-lg">📞</span>
-                <div className="text-left">
-                  <div className="text-[10px] uppercase tracking-wider text-sky-200 font-bold">Call Us Today</div>
-                  <div className="font-extrabold text-sm tracking-wide">+91-9100348679</div>
-                </div>
-              </a>
-            </div>
-
-            {/* Visual Progression Continuum */}
-            <div className="pt-4 border-t border-slate-300/80">
-              <div className="text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2 flex items-center gap-1.5">
-                <Target className="w-3 h-3 text-[#0F62FE]" /> Complete Career Progression Framework
+            {/* Left Column: High-Impact Typography & Fast Track CTA */}
+            <div className="lg:col-span-6 space-y-6">
+              
+              {/* Top Sub-tag with Live Beacon */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-black tracking-widest text-[#0F62FE] uppercase shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-[#0F62FE] animate-ping" />
+                <span className="w-2 h-2 rounded-full bg-[#0F62FE] -ml-4" />
+                IT'S YOUR TIME • COURSE DIVINE PLATFORM
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <div className="p-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-center">
-                  <div className="text-xs font-black text-slate-800 flex items-center justify-center gap-1">
-                    <BookOpen className="w-3.5 h-3.5 text-[#0F62FE]" /> 01. Course
+
+              {/* Main Headline */}
+              <div className="space-y-3">
+                <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-[58px] font-black tracking-tight text-slate-900 leading-[1.08]">
+                  ADVANCE YOUR SKILLS. <br />
+                  <span className="text-[#0F62FE] bg-gradient-to-r from-[#0F62FE] via-[#0052CC] to-[#0F62FE] bg-clip-text text-transparent">
+                    BUILD REAL CAREERS.
+                  </span>
+                </h1>
+                <div className="w-24 h-1.5 bg-[#0F62FE] rounded-full" />
+              </div>
+
+              {/* Subheading */}
+              <p className="text-base sm:text-lg font-semibold text-slate-600 leading-relaxed max-w-xl">
+                Master industrial tech skills through hands-on capstone projects, verified simulations, and guaranteed corporate internships designed to get you hired.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="pt-2 flex flex-wrap items-center gap-3.5">
+                <Link
+                  to="/courses"
+                  className="px-7 py-3.5 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-extrabold text-sm shadow-xl shadow-blue-500/25 transition-all duration-200 flex items-center gap-2 transform hover:-translate-y-0.5"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  Explore Courses
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <Link
+                  to="/internships"
+                  className="px-7 py-3.5 rounded-xl bg-[#071F3F] hover:bg-slate-800 text-white font-extrabold text-sm shadow-lg transition-all duration-200 flex items-center gap-2 transform hover:-translate-y-0.5"
+                >
+                  <Briefcase className="w-4 h-4 text-emerald-400" />
+                  Explore Internships
+                </Link>
+              </div>
+
+              {/* Call Us Today Pill Badge */}
+              <div className="pt-1">
+                <a
+                  href="tel:+919100348679"
+                  className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white border border-slate-200/90 hover:border-[#0F62FE] text-slate-800 font-black text-xs sm:text-sm shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+                >
+                  <span className="w-8 h-8 rounded-xl bg-blue-50 text-[#0F62FE] flex items-center justify-center text-sm">📞</span>
+                  <div className="text-left">
+                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Have Questions? Call Us</div>
+                    <div className="font-extrabold text-xs sm:text-sm text-[#0F62FE] tracking-wide">+91-9100348679</div>
                   </div>
-                  <div className="text-[10px] text-slate-500 font-medium">Masterclass</div>
+                </a>
+              </div>
+
+              {/* Visual Progression Continuum */}
+              <div className="pt-4 border-t border-slate-200">
+                <div className="text-[10px] uppercase tracking-widest font-black text-slate-500 mb-2.5 flex items-center gap-1.5">
+                  <Target className="w-3.5 h-3.5 text-[#0F62FE]" /> 4-Stage Industry Progression Continuum
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-center">
-                  <div className="text-xs font-black text-slate-800 flex items-center justify-center gap-1">
-                    <Code2 className="w-3.5 h-3.5 text-emerald-600" /> 02. Project
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center shadow-xs">
+                    <div className="text-xs font-black text-slate-800 flex items-center justify-center gap-1">
+                      <BookOpen className="w-3.5 h-3.5 text-[#0F62FE]" /> 01. Course
+                    </div>
+                    <div className="text-[10px] text-slate-500 font-medium">Masterclass</div>
                   </div>
-                  <div className="text-[10px] text-slate-500 font-medium">Production</div>
-                </div>
-                <div className="p-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-center">
-                  <div className="text-xs font-black text-slate-800 flex items-center justify-center gap-1">
-                    <Briefcase className="w-3.5 h-3.5 text-amber-600" /> 03. Internship
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center shadow-xs">
+                    <div className="text-xs font-black text-slate-800 flex items-center justify-center gap-1">
+                      <Code2 className="w-3.5 h-3.5 text-emerald-600" /> 02. Project
+                    </div>
+                    <div className="text-[10px] text-slate-500 font-medium">Production Capstone</div>
                   </div>
-                  <div className="text-[10px] text-slate-500 font-medium">Corporate</div>
-                </div>
-                <div className="p-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-center">
-                  <div className="text-xs font-black text-slate-800 flex items-center justify-center gap-1">
-                    <Rocket className="w-3.5 h-3.5 text-purple-600" /> 04. Career
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center shadow-xs">
+                    <div className="text-xs font-black text-slate-800 flex items-center justify-center gap-1">
+                      <Briefcase className="w-3.5 h-3.5 text-amber-600" /> 03. Internship
+                    </div>
+                    <div className="text-[10px] text-slate-500 font-medium">Corporate Verified</div>
                   </div>
-                  <div className="text-[10px] text-slate-500 font-medium">Placement</div>
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center shadow-xs">
+                    <div className="text-xs font-black text-slate-800 flex items-center justify-center gap-1">
+                      <Rocket className="w-3.5 h-3.5 text-purple-600" /> 04. Career
+                    </div>
+                    <div className="text-[10px] text-slate-500 font-medium">Top Placement</div>
+                  </div>
                 </div>
               </div>
+
+            </div>
+
+            {/* Right Column: Custom Course Divine Animated Visual (Learner + Digital Interface + Projects/Career Progression) */}
+            <div className="lg:col-span-6 relative">
+              
+              {/* Outer Decorative Ring */}
+              <div className="relative mx-auto max-w-[540px]">
+                
+                {/* Main Glassmorphic Workstation Container */}
+                <div className="relative bg-[#071F3F] text-white rounded-3xl p-5 sm:p-6 border border-[#0F3C75] shadow-2xl shadow-blue-900/25 overflow-hidden">
+                  
+                  {/* Glowing Ambient Mesh Inside */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-[#0F62FE]/25 rounded-full blur-3xl pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+
+                  {/* Window Title Bar */}
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3.5 relative z-10">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-red-400/80" />
+                      <span className="w-3 h-3 rounded-full bg-amber-400/80" />
+                      <span className="w-3 h-3 rounded-full bg-emerald-400/80" />
+                      <span className="text-[11px] font-mono text-slate-300 ml-2">coursedivine://lms.workspace</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-bold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                        LIVE LAB
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Learner & Mentor Presence Bar */}
+                  <div className="pt-3 pb-4 flex items-center justify-between gap-3 border-b border-white/10 relative z-10">
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <img
+                          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+                          alt="Learner"
+                          className="w-11 h-11 rounded-2xl object-cover border-2 border-[#0F62FE] shadow-md"
+                        />
+                        <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#071F3F]" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-black text-white flex items-center gap-1.5">
+                          Rohan S. <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-500/30 text-sky-300 font-normal">Active Learner</span>
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-medium">Session: SolidWorks & AI Machine Learning</div>
+                      </div>
+                    </div>
+
+                    <div className="hidden sm:flex items-center gap-2 text-right">
+                      <div>
+                        <div className="text-[10px] font-bold text-sky-300">1-on-1 Mentor Connected</div>
+                        <div className="text-[9px] text-slate-400">Dr. Rajesh V. (Ex-Amazon)</div>
+                      </div>
+                      <div className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+                    </div>
+                  </div>
+
+                  {/* Digital Interface Interactive Workspace Simulator */}
+                  <div className="pt-4 space-y-3 relative z-10">
+                    
+                    {/* Workspace Mode Switcher Tabs */}
+                    <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900/90 border border-white/10">
+                      <button
+                        onClick={() => setHeroVisualTab('cad')}
+                        className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                          heroVisualTab === 'cad'
+                            ? 'bg-[#0F62FE] text-white shadow-md'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <Box className="w-3.5 h-3.5 text-sky-300" />
+                        SolidWorks / ANSYS
+                      </button>
+
+                      <button
+                        onClick={() => setHeroVisualTab('code')}
+                        className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                          heroVisualTab === 'code'
+                            ? 'bg-[#0F62FE] text-white shadow-md'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <Terminal className="w-3.5 h-3.5 text-emerald-400" />
+                        Python & AI Agent
+                      </button>
+
+                      <button
+                        onClick={() => setHeroVisualTab('analytics')}
+                        className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                          heroVisualTab === 'analytics'
+                            ? 'bg-[#0F62FE] text-white shadow-md'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <BarChart3 className="w-3.5 h-3.5 text-amber-300" />
+                        BI Dashboard
+                      </button>
+                    </div>
+
+                    {/* Interactive Telemetry Canvas Display */}
+                    <div className="p-3.5 rounded-2xl bg-slate-950/90 border border-white/10 font-mono text-[11px] space-y-2.5">
+                      {heroVisualTab === 'cad' && (
+                        <div className="space-y-2 text-slate-300">
+                          <div className="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-1.5">
+                            <span className="text-sky-300 font-bold">PROJECT: UAV-Quad-Chassis.SLDASM</span>
+                            <span className="text-emerald-400 font-semibold">Mesh Orthogonal Quality: 0.92</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-[10px]">
+                            <div className="p-2 rounded-lg bg-slate-900/80 border border-slate-800">
+                              <span className="text-slate-400 block">FEA Max Stress:</span>
+                              <span className="text-white font-bold text-xs">42.8 MPa (Safe &lt; 120 MPa)</span>
+                            </div>
+                            <div className="p-2 rounded-lg bg-slate-900/80 border border-slate-800">
+                              <span className="text-slate-400 block">Weight Reduction:</span>
+                              <span className="text-emerald-400 font-bold text-xs">-35.4% Optimized</span>
+                            </div>
+                          </div>
+                          <div className="text-[10px] text-sky-400 flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Parametric Mates Verified • Ready for 3D Print / FEA Run
+                          </div>
+                        </div>
+                      )}
+
+                      {heroVisualTab === 'code' && (
+                        <div className="space-y-2 text-slate-300">
+                          <div className="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-1.5">
+                            <span className="text-emerald-400 font-bold">app/routes/ml_pipeline.py</span>
+                            <span className="text-sky-300 font-semibold">FastAPI + LangChain</span>
+                          </div>
+                          <div className="text-[10px] text-slate-300 space-y-1">
+                            <p><span className="text-purple-400">@app.post</span>(<span className="text-emerald-300">"/api/v1/score-ats"</span>)</p>
+                            <p><span className="text-blue-400">async def</span> <span className="text-amber-300">evaluate_resume</span>(resume: <span className="text-sky-300">UploadFile</span>):</p>
+                            <p className="pl-4 text-slate-400">vector = <span className="text-purple-400">await</span> embeddings.create(resume)</p>
+                            <p className="pl-4 text-emerald-400">return {"{"} "matchScore": 0.942, "status": "APPROVED" {"}"}</p>
+                          </div>
+                          <div className="text-[10px] text-emerald-400 flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Automated Tests: 18/18 Passed (Latency: 142ms)
+                          </div>
+                        </div>
+                      )}
+
+                      {heroVisualTab === 'analytics' && (
+                        <div className="space-y-2 text-slate-300">
+                          <div className="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-1.5">
+                            <span className="text-amber-300 font-bold">DAX KPI: Customer Retention Matrix</span>
+                            <span className="text-emerald-400 font-semibold">Live GA4 + SQL Feed</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-[10px]">
+                            <div className="p-2 rounded-lg bg-slate-900/80 border border-slate-800">
+                              <span className="text-slate-400 block">ROAS Multiplier:</span>
+                              <span className="text-emerald-400 font-bold text-xs">12.4x Target Hit</span>
+                            </div>
+                            <div className="p-2 rounded-lg bg-slate-900/80 border border-slate-800">
+                              <span className="text-slate-400 block">Churn Risk Detected:</span>
+                              <span className="text-sky-300 font-bold text-xs">60 Days Early Alert</span>
+                            </div>
+                          </div>
+                          <div className="text-[10px] text-amber-300 flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Power BI Executive Report Published & Synced
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* Floating Animated Career Progression Milestone Card */}
+                <div className="hidden sm:block absolute -bottom-7 -left-6 z-20 p-3.5 rounded-2xl bg-white text-slate-900 border border-slate-200/90 shadow-2xl shadow-blue-900/20 max-w-[270px] animate-float-slow">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs font-black">
+                      🚀
+                    </span>
+                    <div>
+                      <div className="text-[11px] font-black text-slate-900 leading-tight">Career Milestone Unlocked</div>
+                      <div className="text-[9px] text-slate-500 font-semibold">Placed at Microsoft • ₹24.5 LPA</div>
+                    </div>
+                  </div>
+                  
+                  {/* Mini Progress Bar */}
+                  <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-gradient-to-r from-[#0F62FE] to-emerald-400 h-full rounded-full w-[92%]" />
+                  </div>
+                  <div className="flex items-center justify-between text-[9px] text-slate-500 font-bold pt-1">
+                    <span>Course + Project + Internship</span>
+                    <span className="text-emerald-600">100% Ready</span>
+                  </div>
+                </div>
+
+                {/* Floating Animated Project Metric Badge */}
+                <div className="hidden sm:block absolute -top-5 -right-5 z-20 px-3.5 py-2.5 rounded-2xl bg-slate-900/95 backdrop-blur-md text-white border border-slate-700 shadow-xl animate-float-reverse">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-xl bg-[#0F62FE] text-white flex items-center justify-center font-black text-xs">
+                      ⚡
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-sky-300 font-bold uppercase">Verified Capstone Project</div>
+                      <div className="text-xs font-extrabold text-white">CSWA CAD & 35% Weight Drop</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
 
           </div>
         </div>
       </section>
+
 
       {/* Premium Navy & Electric Blue Performance Strip */}
       <section className="bg-gradient-to-r from-[#061833] via-[#0C2A52] to-[#061833] text-white py-12 border-y border-[#0E3466] shadow-xl relative overflow-hidden">
@@ -1026,45 +1334,74 @@ const Home = () => {
       </section>
 
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <span className="text-xs font-extrabold tracking-widest text-[#0F62FE] uppercase">
-              💻 Practical Portfolio Power
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-1">
-              Don’t Just Learn It. Build It.
+      {/* 2. MAJOR USP: WHAT WILL YOU BUILD? Interactive Project Gallery */}
+      <section id="what-will-you-build" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 scroll-mt-24">
+        
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
+          <div className="space-y-2 max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-xs font-black tracking-widest text-[#0F62FE] uppercase shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-[#0F62FE]" />
+              COURSE DIVINE CORE DIFFERENTIATOR & MAJOR USP
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
+              WHAT WILL YOU BUILD?
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 font-medium mt-1">
-              Real student and capstone projects that turn job interviews into confident technical demos.
+            <p className="text-sm sm:text-base text-slate-600 font-semibold leading-relaxed">
+              Generic courses teach syntax. Course Divine equips you with verified industrial capstones, engineering simulations, and AI pipelines that prove your capability directly to hiring managers.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {['All', 'SolidWorks', 'ANSYS', 'Data Science', 'Digital Marketing', 'Python', 'UI/UX'].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setProjectCategory(cat)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
-                  projectCategory === cat
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="hidden lg:inline text-xs font-bold text-slate-400">
+              💡 Hover to preview • Click to inspect blueprints
+            </span>
+            <Link
+              to="/courses"
+              className="px-5 py-3 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5"
+            >
+              View All Courses <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
 
+        {/* Project Gallery Filter Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {projectCategoryTabs.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setProjectCategory(tab.value)}
+              className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition-all duration-200 flex items-center gap-2 ${
+                projectCategory === tab.value
+                  ? 'bg-[#071F3F] text-white shadow-xl shadow-slate-900/20 scale-102 border border-slate-700'
+                  : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              {tab.value === 'SolidWorks Project' && <Box className="w-3.5 h-3.5 text-sky-400" />}
+              {tab.value === 'ANSYS Project' && <Cpu className="w-3.5 h-3.5 text-blue-400" />}
+              {tab.value === 'Data Dashboard' && <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />}
+              {tab.value === 'Marketing Campaign' && <TrendingUp className="w-3.5 h-3.5 text-amber-400" />}
+              {tab.value === 'Python Project' && <Terminal className="w-3.5 h-3.5 text-purple-400" />}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Large Project Showcase Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              onClick={() => setSelectedProject(project)}
-              className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group cursor-pointer hover:-translate-y-1"
+              onMouseEnter={() => setHoveredProjectId(project.id)}
+              onMouseLeave={() => setHoveredProjectId(null)}
+              onClick={() => {
+                setSelectedProject(project);
+                setProjectModalTab('overview');
+              }}
+              className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col group cursor-pointer hover:-translate-y-1.5 relative"
             >
-              <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
+              {/* Media Container with Interactive Hover Preview Overlay */}
+              <div className="relative aspect-[16/10] overflow-hidden bg-slate-950">
                 <img
                   src={project.image}
                   alt={project.title}
@@ -1072,45 +1409,85 @@ const Home = () => {
                     e.target.onerror = null;
                     e.target.src = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80';
                   }}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 opacity-90 group-hover:opacity-75"
                 />
 
-                <div className="absolute top-3 left-3 bg-[#071F3F]/90 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-md border border-slate-700">
-                  {project.domain}
+                {/* Top Category Badge */}
+                <div className="absolute top-3 left-3 bg-[#071F3F]/90 backdrop-blur-md text-white text-[11px] font-black px-3 py-1 rounded-xl border border-slate-700 shadow-md">
+                  {project.category}
                 </div>
-                <div className="absolute bottom-3 left-3 right-3 bg-slate-950/85 backdrop-blur-sm p-2.5 rounded-xl text-white text-[11px] font-semibold border border-slate-800 flex items-center justify-between">
-                  <span>📊 {project.metrics}</span>
-                  <span className="text-brand-400 font-bold">Details →</span>
+
+                {/* Difficulty / Tag Pill */}
+                <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-md text-slate-900 text-[10px] font-extrabold px-2.5 py-1 rounded-xl shadow-md flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  {project.previewBadge}
+                </div>
+
+                {/* Interactive Hover HUD Overlay (Active on Hover) */}
+                <div className={`absolute inset-0 bg-slate-950/85 backdrop-blur-xs p-5 flex flex-col justify-between transition-opacity duration-300 ${
+                  hoveredProjectId === project.id ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                }`}>
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] uppercase tracking-widest font-black text-sky-400">
+                      ⚡ LIVE CAPSTONE PREVIEW
+                    </span>
+                    <p className="text-xs text-slate-200 font-medium line-clamp-3 leading-relaxed">
+                      {project.challenge}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2 pt-2 border-t border-slate-800">
+                    <div className="text-[10px] font-mono text-emerald-400 font-bold">
+                      🏆 {project.metrics}
+                    </div>
+                    <div className="w-full py-2 rounded-xl bg-[#0F62FE] text-white text-xs font-black text-center flex items-center justify-center gap-1.5 shadow-md">
+                      <Eye className="w-3.5 h-3.5" /> Inspect Full Architecture Blueprint →
+                    </div>
+                  </div>
+                </div>
+
+                {/* Default Bottom Benchmark Bar (Hidden on Hover) */}
+                <div className={`absolute bottom-3 left-3 right-3 bg-slate-950/90 backdrop-blur-sm px-3 py-2 rounded-xl text-white text-[11px] font-bold border border-slate-800 flex items-center justify-between transition-opacity duration-300 ${
+                  hoveredProjectId === project.id ? 'opacity-0' : 'opacity-100'
+                }`}>
+                  <span className="truncate pr-2">📊 {project.metrics}</span>
+                  <span className="text-sky-300 font-bold shrink-0">Details →</span>
                 </div>
               </div>
 
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <h3 className="font-extrabold text-slate-900 text-base group-hover:text-[#0F62FE] transition">
+              {/* Card Body */}
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
+                <div className="space-y-2">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0F62FE]">
+                    {project.domain}
+                  </span>
+                  <h3 className="font-extrabold text-slate-900 text-base sm:text-lg group-hover:text-[#0F62FE] transition line-clamp-2">
                     {project.title}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
                     {project.description}
                   </p>
                 </div>
 
                 <div className="space-y-3 pt-3 border-t border-slate-100">
+                  {/* Tool Badges */}
                   <div className="flex flex-wrap gap-1.5">
                     {project.tools.slice(0, 3).map((tool, i) => (
-                      <span key={i} className="px-2.5 py-0.5 rounded-md bg-blue-50 text-[#0F62FE] text-[10px] font-bold">
+                      <span key={i} className="px-2.5 py-1 rounded-lg bg-blue-50 text-[#0F62FE] text-[10px] font-extrabold border border-blue-100">
                         {tool}
                       </span>
                     ))}
                     {project.tools.length > 3 && (
-                      <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold">
+                      <span className="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 text-[10px] font-bold">
                         +{project.tools.length - 3} more
                       </span>
                     )}
                   </div>
 
+                  {/* Associated Course Link */}
                   <div className="flex items-center justify-between text-xs pt-1">
-                    <span className="text-slate-400">Associated Course:</span>
-                    <span className="font-bold text-[#0F62FE] group-hover:underline">
+                    <span className="text-slate-400 font-medium">Taught in:</span>
+                    <span className="font-bold text-[#0F62FE] group-hover:underline truncate max-w-[200px]">
                       {project.courseName}
                     </span>
                   </div>
@@ -1120,73 +1497,185 @@ const Home = () => {
           ))}
         </div>
 
+        {/* Interactive Project Details & Blueprint Modal */}
         {selectedProject && (
-          <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-200">
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-bold text-[#0F62FE] uppercase tracking-wider">
-                    {selectedProject.domain} • {selectedProject.category}
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
+          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200 overflow-y-auto">
+            <div className="bg-white rounded-3xl max-w-3xl w-full my-8 shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+              
+              {/* Modal Header */}
+              <div className="p-6 sm:p-8 bg-[#071F3F] text-white flex items-start justify-between gap-4 relative overflow-hidden shrink-0">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#0F62FE]/20 rounded-full blur-3xl pointer-events-none" />
+                
+                <div className="space-y-1 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-sky-300 text-[10px] font-black uppercase">
+                    <span>{selectedProject.domain}</span>
+                    <span>•</span>
+                    <span>{selectedProject.category}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-white leading-snug">
                     {selectedProject.title}
                   </h3>
+                  <div className="text-xs font-mono text-emerald-400 font-semibold pt-1">
+                    🏆 Verified Industry Benchmark: {selectedProject.metrics}
+                  </div>
                 </div>
+
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                  className="p-2 rounded-2xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition shrink-0 relative z-10"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="rounded-2xl overflow-hidden aspect-[16/9] bg-slate-900">
-                <img
-                  src={selectedProject.image}
-                  alt={selectedProject.title}
-                  className="w-full h-full object-cover"
-                />
+              {/* Modal Navigation Tabs */}
+              <div className="flex border-b border-slate-200 bg-slate-50 px-6 sm:px-8 text-xs font-bold shrink-0">
+                <button
+                  onClick={() => setProjectModalTab('overview')}
+                  className={`py-3.5 px-4 border-b-2 transition ${
+                    projectModalTab === 'overview'
+                      ? 'border-[#0F62FE] text-[#0F62FE] font-black'
+                      : 'border-transparent text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  Overview & Challenge
+                </button>
+                <button
+                  onClick={() => setProjectModalTab('blueprint')}
+                  className={`py-3.5 px-4 border-b-2 transition ${
+                    projectModalTab === 'blueprint'
+                      ? 'border-[#0F62FE] text-[#0F62FE] font-black'
+                      : 'border-transparent text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  4-Step Build Workflow
+                </button>
+                <button
+                  onClick={() => setProjectModalTab('deliverables')}
+                  className={`py-3.5 px-4 border-b-2 transition ${
+                    projectModalTab === 'deliverables'
+                      ? 'border-[#0F62FE] text-[#0F62FE] font-black'
+                      : 'border-transparent text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  Deliverables & Stack
+                </button>
               </div>
 
-              <div className="space-y-4">
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  {selectedProject.description}
-                </p>
+              {/* Modal Scrollable Body */}
+              <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
+                
+                {projectModalTab === 'overview' && (
+                  <div className="space-y-6">
+                    <div className="rounded-2xl overflow-hidden aspect-[16/9] bg-slate-900 max-h-[260px]">
+                      <img
+                        src={selectedProject.image}
+                        alt={selectedProject.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
 
-                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
-                  🏆 Verified Project Benchmark: {selectedProject.metrics}
-                </div>
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider">Project Synopsis</h4>
+                      <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                        {selectedProject.detailedDescription || selectedProject.description}
+                      </p>
+                    </div>
 
-                <div className="space-y-2">
-                  <div className="text-xs font-bold text-slate-500 uppercase">Technologies & Tools Applied:</div>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.tools.map((tool, i) => (
-                      <span key={i} className="px-3 py-1 rounded-lg bg-slate-100 text-slate-800 text-xs font-bold">
-                        {tool}
-                      </span>
-                    ))}
+                    <div className="p-4 rounded-2xl bg-blue-50/80 border border-blue-200/80 space-y-1.5">
+                      <div className="text-xs font-black text-[#0F62FE] uppercase flex items-center gap-1.5">
+                        <Target className="w-4 h-4 text-[#0F62FE]" /> Core Engineering Challenge
+                      </div>
+                      <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                        {selectedProject.challenge}
+                      </p>
+                    </div>
                   </div>
+                )}
+
+                {projectModalTab === 'blueprint' && (
+                  <div className="space-y-4">
+                    <div className="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">
+                      Step-by-Step Production Architecture
+                    </div>
+
+                    <div className="space-y-3">
+                      {selectedProject.workflow?.map((item, idx) => (
+                        <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex gap-4 items-start">
+                          <div className="w-8 h-8 rounded-xl bg-[#0F62FE] text-white font-black text-xs flex items-center justify-center shrink-0">
+                            {item.step}
+                          </div>
+                          <div className="space-y-1">
+                            <div className="text-sm font-black text-slate-900">{item.title}</div>
+                            <p className="text-xs text-slate-600 font-medium leading-relaxed">{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {projectModalTab === 'deliverables' && (
+                  <div className="space-y-6">
+                    <div className="space-y-3">
+                      <div className="text-xs font-black text-slate-400 uppercase tracking-wider">
+                        Key Portfolio Deliverables
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {selectedProject.keyDeliverables?.map((item, idx) => (
+                          <div key={idx} className="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200/70 text-xs font-bold text-emerald-950 flex items-start gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                      <div className="text-xs font-black text-slate-400 uppercase tracking-wider">
+                        Technologies & Tools Mastered
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedProject.tools.map((tool, i) => (
+                          <span key={i} className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold">
+                            {tool}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div className="p-6 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+                <div className="text-xs text-slate-500 text-center sm:text-left">
+                  Included with 1-on-1 mentor guidance in <strong className="text-slate-900">{selectedProject.courseName}</strong>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
                   <button
                     onClick={() => setSelectedProject(null)}
-                    className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50"
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-white transition"
                   >
-                    Close Preview
+                    Close
                   </button>
                   <Link
                     to={selectedProject.courseLink}
-                    className="px-6 py-2.5 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white text-xs font-bold shadow-md transition"
+                    className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white text-xs font-black shadow-lg shadow-blue-500/25 transition flex items-center justify-center gap-1.5"
                   >
-                    Learn to Build This in {selectedProject.courseName} →
+                    Learn to Build This →
                   </Link>
                 </div>
               </div>
+
             </div>
           </div>
         )}
+
       </section>
+
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center max-w-3xl mx-auto space-y-3">

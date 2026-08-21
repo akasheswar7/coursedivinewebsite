@@ -27,17 +27,30 @@ const Placements = () => {
       .catch(() => {});
   }, []);
 
-  const companiesList = ['All', 'Microsoft', 'Amazon', 'Deloitte', 'Swiggy', 'Oracle', 'PwC India'];
+  const companiesList = [
+    'All',
+    'Infosys',
+    'Tata Consultancy Services (TCS)',
+    'Wipro',
+    'CMA CGM',
+    'Aira Interiors',
+    'NIIT Foundation',
+    'Magma HDI General Insurance Company',
+    'Venas Engineering Consultants',
+    'Big Bull',
+    'Century Pulp & Paper (CPP)'
+  ];
 
   const filteredPlacements = placements.filter((p) => {
     const matchesSearch =
-      p.studentName.toLowerCase().includes(search.toLowerCase()) ||
-      p.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      p.jobRole.toLowerCase().includes(search.toLowerCase());
+      (p.studentName && p.studentName.toLowerCase().includes(search.toLowerCase())) ||
+      (p.companyName && p.companyName.toLowerCase().includes(search.toLowerCase())) ||
+      (p.jobRole && p.jobRole.toLowerCase().includes(search.toLowerCase())) ||
+      (p.courseTaken && p.courseTaken.toLowerCase().includes(search.toLowerCase()));
 
     const matchesCompany =
       selectedCompany === 'All' ||
-      p.companyName.toLowerCase() === selectedCompany.toLowerCase();
+      (p.companyName && p.companyName.toLowerCase().includes(selectedCompany.toLowerCase()));
 
     return matchesSearch && matchesCompany;
   });

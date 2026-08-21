@@ -20,6 +20,7 @@ const Blog = () => {
 
   const categories = [
     'All',
+    'Career Intelligence',
     'AI & Machine Learning',
     'Cloud & DevOps',
     'Enterprise ERP',
