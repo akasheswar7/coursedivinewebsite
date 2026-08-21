@@ -99,9 +99,9 @@ const CourseCard = ({ course }) => {
         to={`/courses/${course.slug}`}
         className="relative block aspect-square max-h-48 sm:max-h-56 overflow-hidden rounded-xl bg-slate-100 mb-2.5 sm:mb-3 select-none"
       >
-        {!imgError && course.image ? (
+        {!imgError && (course.thumbnail || course.image) ? (
           <img
-            src={course.image}
+            src={course.thumbnail || course.image}
             alt={course.title}
             onError={() => setImgError(true)}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
