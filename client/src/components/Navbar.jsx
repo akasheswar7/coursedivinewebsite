@@ -51,6 +51,7 @@ const Navbar = () => {
   }, [location.pathname]);
 
   const moreLinks = [
+    { name: 'Projects Gallery 🌟', path: '/gallery', icon: Sparkles, desc: '12+ Capstone Infographics' },
     { name: 'Student Testimonials', path: '/testimonials', icon: MessageSquareQuote, desc: 'Verified student feedback' },
     { name: 'Get Certified', path: '/get-certified', icon: Award, desc: 'Professional credentials' },
     { name: 'Verify Certificate', path: '/verify-certificate', icon: ShieldCheck, desc: 'Credential verification' },

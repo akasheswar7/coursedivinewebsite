@@ -128,6 +128,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/gallery" className="hover:text-brand-400 transition flex items-center gap-1.5 font-bold text-sky-300">
+                  <ArrowRight className="w-3.5 h-3.5 text-sky-400" /> Projects Gallery 🌟
+                </Link>
+              </li>
+              <li>
                 <Link to="/testimonials" className="hover:text-brand-400 transition flex items-center gap-1.5 font-bold text-amber-300">
                   <ArrowRight className="w-3.5 h-3.5 text-amber-400" /> Student Testimonials
                 </Link>

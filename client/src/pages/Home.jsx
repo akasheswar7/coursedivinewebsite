@@ -53,6 +53,20 @@ import api, { fallbackStore } from '../services/api';
 import { useNotification } from '../context/NotificationContext';
 import EnrollmentModal from '../components/EnrollmentModal';
 import VideoModal from '../components/VideoModal';
+import {
+  project1AnsysBracket,
+  project2BiSalesAnalytics,
+  project3CyberSecurity,
+  project4AiChurn,
+  project5Ecommerce,
+  project6SapS4Hana,
+  project7EcoFutureDesign,
+  project8ClaudeAi,
+  project9DigitalMarketing,
+  project10PythonSales,
+  project11SolidworksGearbox,
+  project12Ecosystem3D
+} from '../assets/gallery';
 
 const AnimatedCounter = ({ target, duration = 6500, suffix = '', decimals = 0 }) => {
   const [count, setCount] = useState(0);
@@ -313,143 +327,143 @@ const Home = () => {
   const showcaseProjects = [
     {
       id: 'p1',
-      title: '3D Autonomous Drone Frame & Aerodynamic EV Chassis',
-      shortTitle: 'Autonomous Drone CAD & Chassis',
-      domain: 'Engineering & Design',
+      title: 'Industrial Gearbox Assembly with 28+ Precision Parts',
+      shortTitle: 'SolidWorks Gearbox CAD & Exploded Assembly',
+      domain: 'Mechanical Design & CAD',
       category: 'SolidWorks Project',
-      image: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=800&q=80',
-      description: 'Parametric CAD modeling and assembly of a high-speed surveillance drone with optimized strength-to-weight ratio and generative weight reduction.',
-      detailedDescription: 'In this production-grade capstone, you will architect a complete industrial UAV quadcopter assembly from initial 2D schematics to 3D parametric modeling, sheet metal brackets, generative lattice weight reduction, and GD&T production drawings compliant with CSWA/CSWP standards.',
-      challenge: 'Minimizing aerodynamic parasitic drag while ensuring the carbon fiber arms and payload gimbals withstand sudden motor torque shocks and resonance vibrations.',
-      tools: ['SolidWorks 2026', 'CSWA CAD', 'Sheet Metal', 'Photoview 360', 'Generative Design', 'GD&T Standards'],
+      image: project11SolidworksGearbox,
+      description: 'Parametric CAD modeling and assembly of a high-performance industrial gearbox with 28+ custom gears, shafts, bearings, and casing parts in SOLIDWORKS 2023.',
+      detailedDescription: 'In this production-grade capstone, you will architect a complete industrial gearbox assembly from initial 2D schematics to 3D parametric modeling, exploded view tolerances, GD&T production drawings, and sectional analysis.',
+      challenge: 'Minimizing backlash and ensuring high load transmission capacity with optimized gear ratios and precise mechanical mates.',
+      tools: ['SOLIDWORKS 2023', 'Mechanical Design', 'Exploded View', 'Technical Drafting', 'Sectional Views', 'GD&T Standards'],
       workflow: [
         { step: '01', title: 'Parametric 3D Wireframing', desc: 'Constructing robust base sketches and primary reference planes with parametric dimension constraints.' },
-        { step: '02', title: 'Sub-Assembly & Mates', desc: 'Assembling 48+ custom components with concentric, coincident, and mechanical gear mates in SolidWorks.' },
-        { step: '03', title: 'Generative Lattice Optimization', desc: 'Applying topology optimization to remove 35% non-critical volume while preserving structural stiffness.' },
+        { step: '02', title: 'Sub-Assembly & Mates', desc: 'Assembling 28+ custom components with concentric, coincident, and mechanical gear mates in SolidWorks.' },
+        { step: '03', title: 'Exploded & Sectional Views', desc: 'Modeling exploded views and internal section slices to verify gear alignment and bearing tolerances.' },
         { step: '04', title: 'Production 2D Drafting & BOM', desc: 'Exporting industry-ready multi-view fabrication drawings with bill of materials and geometric tolerances.' }
       ],
       keyDeliverables: [
         'Complete 3D Parametric CAD Assembly (.SLDASM)',
-        'Bill of Materials (BOM) with material density specs',
-        'Fabrication-ready 2D Drawings with GD&T',
-        'Photorealistic 4K Renderings in Photoview 360'
+        'Exploded & Sectional Views with 28+ Parts',
+        'Fabrication-ready 2D Blueprints with GD&T',
+        'Full Bill of Materials (BOM) for Manufacturing'
       ],
       courseLink: '/courses/solidworks-3d-cad-mechanical-design-certified-course',
       courseName: 'SolidWorks 3D CAD Certified Course',
-      metrics: '35% Weight Reduction, CSWA Certified Benchmark',
-      previewBadge: '3D CAD Assembly • 48 Parts'
+      metrics: '28+ Parts, 4.8/5 Rating, 18 Hours Benchmark',
+      previewBadge: 'SolidWorks 2023 • 28+ Parts'
     },
     {
       id: 'p2',
-      title: 'Commercial Aircraft Wing Structural & Aerodynamic Stress Simulation',
-      shortTitle: 'Aircraft Wing FEA & CFD Simulation',
-      domain: 'Engineering & Design',
+      title: 'Structural Analysis of Bracket Using ANSYS Workbench',
+      shortTitle: 'ANSYS Bracket FEA & Stress Simulation',
+      domain: 'CAE & Simulation',
       category: 'ANSYS Project',
-      image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80',
-      description: 'Finite Element Analysis (FEA) and CFD Fluent boundary simulation assessing von Mises stresses, deformation, and turbulence across varying altitudes.',
-      detailedDescription: 'Simulate high-altitude aerodynamic forces and structural resilience on a commercial transonic airfoil using ANSYS Workbench. Learn polyhedral meshing, boundary layer inflation, Navier-Stokes fluid modeling, and structural static/modal stress analysis.',
-      challenge: 'Accurately resolving boundary layer separation shocks and preventing flutter deformation under high-g aerodynamic load factors (2.5g pull-up maneuver).',
-      tools: ['ANSYS Workbench', 'Static Structural FEA', 'Fluent CFD', 'Polyhedral Mesher', 'Post-Processing CFD'],
+      image: project1AnsysBracket,
+      description: 'Finite Element Analysis (FEA) of a mechanical bracket to evaluate static structural safety, von Mises stresses, deformation, and optimize for minimum weight.',
+      detailedDescription: 'Simulate high-load mechanical stresses and deformation on a structural bracket using ANSYS Workbench. Learn tetrahedral meshing with 1.25L+ nodes, boundary load constraints, stress convergence, and factor of safety validation.',
+      challenge: 'Identifying stress concentration points and ensuring minimum Factor of Safety (2.15) under 1000 N static force.',
+      tools: ['ANSYS Workbench', 'Static Structural FEA', 'DesignModeler', 'SpaceClaim', 'Meshing Engine'],
       workflow: [
-        { step: '01', title: 'CAD Cleanup & Fluid Domain', desc: 'Extracting clean computational fluid domain and establishing far-field pressure boundaries.' },
-        { step: '02', title: 'Inflation Layer Meshing', desc: 'Generating structured boundary layer prism layers (y+ ~ 1) with orthogonal mesh quality > 0.85.' },
-        { step: '03', title: 'CFD Fluent Navier-Stokes Run', desc: 'Executing turbulent k-omega SST flow simulations at Mach 0.78 with lift/drag convergence monitoring.' },
-        { step: '04', title: 'FEA One-Way Fluid-Structure', desc: 'Transferring aerodynamic surface pressures onto solid wing spars to calculate von Mises stress and safety margins.' }
+        { step: '01', title: 'Geometry Import & Setup', desc: 'Importing clean 3D CAD model and defining fixed support and 1000 N directional force.' },
+        { step: '02', title: 'Tetrahedral Meshing', desc: 'Generating 68,432 tetrahedral elements and 1,25,814 nodes with high mesh quality.' },
+        { step: '03', title: 'Solver Convergence Plot', desc: 'Running FEA solver to monitor total deformation convergence across element iterations.' },
+        { step: '04', title: 'Results & Factor of Safety', desc: 'Validating Max Von-Mises Stress (248.7 MPa) and Minimum Factor of Safety (2.15).' }
       ],
       keyDeliverables: [
-        'FEA Static Structural & Modal Vibration Report',
-        'Lift & Drag Coefficient Polar Curves (Cl vs Cd)',
-        'Velocity Vector & Pressure Contour Heatmaps',
-        'Aviation Safety Factor Compliance Certificate'
+        'Total Deformation (0.412 mm) Heatmaps',
+        'Von-Mises Stress (248.7 MPa) Distribution Plot',
+        'Mesh Quality & Convergence Report',
+        'Design Safety Validation Certificate'
       ],
       courseLink: '/courses/ansys-fea-cfd-simulation-engineering-certified-course',
       courseName: 'ANSYS FEA & CFD Certified Course',
-      metrics: 'Safety Factor 2.4, 0.02mm Deflection Benchmark',
-      previewBadge: 'CFD & FEA • Fluent Multiphysics'
+      metrics: 'Factor of Safety 2.15, Max Stress 248.7 MPa',
+      previewBadge: 'ANSYS Workbench • 1.25L Nodes'
     },
     {
       id: 'p3',
-      title: 'Real-Time Enterprise Churn Intelligence & Executive BI Dashboard',
-      shortTitle: 'AI Churn Intelligence & BI Dashboard',
+      title: 'Business Intelligence & Sales Analytics Dashboard',
+      shortTitle: 'Power BI Enterprise Sales Analytics',
       domain: 'Data & AI',
       category: 'Data Dashboard',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
-      description: 'End-to-end predictive machine learning pipeline identifying at-risk subscribers and visualizing retention levers in an interactive dashboard.',
-      detailedDescription: 'Build an enterprise analytics hub that connects raw transactional data from cloud databases into an automated ML churn scoring model and a live interactive executive Power BI dashboard with automated alerts and what-if scenario forecasting.',
-      challenge: 'Handling imbalanced subscriber retention datasets (93:7 non-churn vs churn) and generating low-latency real-time API scoring for customer success teams.',
-      tools: ['Python', 'Pandas', 'Scikit-Learn', 'XGBoost', 'Power BI', 'DAX', 'SQL', 'FastAPI'],
+      image: project2BiSalesAnalytics,
+      description: 'End-to-end data analytics project analyzing sales performance, customer segments, regional revenues, and profit trends in Power BI.',
+      detailedDescription: 'Build an enterprise BI hub connecting SQL, Excel, and CSV data sources into an interactive Power BI dashboard with DAX calculations, geospatial regional maps, and monthly profit growth simulators.',
+      challenge: 'Handling 150K+ rows across 5 data sources to identify top-performing product categories and optimize marketing spend.',
+      tools: ['Power BI', 'SQL Server', 'Python', 'DAX', 'Power Query', 'Google Analytics'],
       workflow: [
-        { step: '01', title: 'Data Pipeline & Feature Store', desc: 'Extracting 500k+ customer transactions via SQL and engineering RFM (Recency, Frequency, Monetary) indicators.' },
-        { step: '02', title: 'Predictive Model Training', desc: 'Training XGBoost classifier with SMOTE oversampling, hyperparameter tuning, and SHAP explainability values.' },
-        { step: '03', title: 'FastAPI Microservice', desc: 'Deploying model scoring endpoint returning churn probability and top retention risk factors in <50ms.' },
-        { step: '04', title: 'Executive Power BI Dashboard', desc: 'Designing interactive BI visuals with DAX measures, dynamic slicers, revenue impact simulators, and automated triggers.' }
+        { step: '01', title: 'Data Ingestion & Cleaning', desc: 'Extracting 150K+ rows from SQL Server and handling missing values with Power Query.' },
+        { step: '02', title: 'Data Modeling & DAX', desc: 'Creating star schema relationship models and writing custom DAX measures for profit margins.' },
+        { step: '03', title: 'Geospatial Regional Heatmaps', desc: 'Mapping global revenue across North America, Europe, Asia Pacific, and South America.' },
+        { step: '04', title: 'Executive BI Dashboard', desc: 'Deploying interactive visuals with dynamic slicers, KPI cards ($2.45M Revenue), and payment mode trends.' }
       ],
       keyDeliverables: [
         'Interactive Multi-Page Power BI Dashboard (.PBIX)',
-        'Trained XGBoost Machine Learning Model with SHAP',
-        'Real-Time Scoring REST API with Docker container',
-        'Executive Revenue Protection Summary Deck'
+        'Custom DAX Revenue & Profit Margin Formulas',
+        'Regional Sales & Product Category Breakdowns',
+        'Executive Actionable Insights Presentation'
       ],
       courseLink: '/courses/data-science-ai-masterclass-certified-course',
       courseName: 'Data Science & AI Masterclass',
-      metrics: '94.2% ROC-AUC Accuracy, Real-Time API',
-      previewBadge: 'Power BI + ML • 500k Records'
+      metrics: '$2.45M Revenue, 150K+ Rows, 24.6% Margin',
+      previewBadge: 'Power BI + SQL • 150K+ Rows'
     },
     {
       id: 'p4',
-      title: '12x ROAS Omnichannel Growth & High-Conversion Funnel',
-      shortTitle: '12x ROAS Performance Marketing Campaign',
+      title: 'Omnichannel Digital Marketing & ROAS Growth Campaign',
+      shortTitle: 'Omnichannel 4.67 ROAS Performance Marketing',
       domain: 'Digital Marketing',
       category: 'Marketing Campaign',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
-      description: 'Complete performance marketing campaign with high-converting landing page copywriting, Google Search intent ads, and retargeting workflows.',
-      detailedDescription: 'Design and deploy a full-funnel digital marketing engine. From keyword intent clustering and ad copy psychology to Google Performance Max campaigns, Meta dynamic retargeting, and Google Analytics 4 (GA4) attribution modeling.',
-      challenge: 'Scaling monthly customer acquisition while lowering Cost Per Lead (CPL) by 40% across saturated high-competition search verticals.',
-      tools: ['Google Ads (PMax)', 'Meta Ads Manager', 'GA4 Analytics', 'Looker Studio', 'SEMrush', 'Conversion Copywriting'],
+      image: project9DigitalMarketing,
+      description: 'Data-driven digital marketing campaign to increase brand awareness, drive qualified leads, and boost sales across Meta, Google, and LinkedIn Ads.',
+      detailedDescription: 'Design and deploy a full-funnel digital marketing engine. From audience demographic targeting and ad creative A/B testing to Google Ads, Meta Ads Manager, email automations, and ROAS attribution.',
+      challenge: 'Achieving a high 4.67 ROAS and 5.12% conversion rate while scaling 1.2M impressions and 45.8K clicks.',
+      tools: ['Meta Ads Manager', 'Google Ads', 'LinkedIn Ads', 'Email Automation', 'Looker Studio', 'A/B Testing'],
       workflow: [
-        { step: '01', title: 'Intent Keyword Clustering', desc: 'Mining high-commercial-intent long-tail keywords using SEMrush and architecting exact-match ad groups.' },
-        { step: '02', title: 'High-Converting Landing Pages', desc: 'Writing direct-response copywriting and wireframing frictionless mobile-first conversion pages.' },
-        { step: '03', title: 'Multi-Channel Ad Scaling', desc: 'Configuring Google Search, YouTube Ads, and Meta Dynamic Product Ads with smart bidding algorithms.' },
-        { step: '04', title: 'Attribution & ROAS Analytics', desc: 'Building custom GA4 event funnels and Looker Studio live dashboards for real-time ROI tracking.' }
+        { step: '01', title: 'Audience Targeting', desc: 'Defining high-converting young professional personas (22-35 yrs) with tech interests.' },
+        { step: '02', title: 'Ad Creatives & Copy', desc: 'Designing A/B tested multi-format video and carousel creatives reducing CPC by 18%.' },
+        { step: '03', title: 'Channel Optimization', desc: 'Deploying Meta ($1,050) and Google Ads ($850) with automated smart bidding.' },
+        { step: '04', title: 'Funnel Attribution', desc: 'Tracking 2,349 conversions, 12.5K landing page views, and 4.67 overall ROAS.' }
       ],
       keyDeliverables: [
-        'Complete Multi-Channel Ad Campaign Architecture',
-        'High-Converting Landing Page Wireframe & Copy Deck',
-        'Live Looker Studio Real-Time Attribution Dashboard',
-        'A/B Creative Testing Matrix & Ad Spend Allocation Plan'
+        'Complete Multi-Channel Ad Campaign Structure',
+        'A/B Creative Testing Matrix & ROAS Reports',
+        'Conversion Funnel Optimization Deck',
+        'Real-Time Attribution Dashboard'
       ],
       courseLink: '/courses/digital-marketing-growth-mastery-certified-course',
       courseName: 'Digital Marketing & Growth Mastery',
-      metrics: '12.4x ROAS, 18,000+ Verified Leads',
-      previewBadge: 'Google & Meta Ads • 12.4x ROAS'
+      metrics: '4.67 ROAS, 1.2M Impressions, 2,349 Sales',
+      previewBadge: 'Meta & Google Ads • 4.67 ROAS'
     },
     {
       id: 'p5',
-      title: 'AI Algorithmic Trading Bot & Autonomous Resume ATS Matcher',
-      shortTitle: 'AI Autonomous Agent & Python Engine',
-      domain: 'Software & Web',
+      title: 'Python Interactive Sales Analysis & 3D Profit Model',
+      shortTitle: 'Python EDA & 3D Profit Optimization',
+      domain: 'Software & Data',
       category: 'Python Project',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
-      description: 'Full-stack AI web application parsing resumes, matching skills against job descriptions, and providing automated bullet point suggestions.',
-      detailedDescription: 'Develop a high-performance Python application featuring autonomous web scraping, LLM-powered vector embeddings for ATS resume matching, and algorithmic signal processing for real-time financial market trend alerts.',
-      challenge: 'Processing dense multi-page PDF documents and parsing messy candidate skills against complex enterprise job requirements in sub-second response times.',
-      tools: ['Python 3.12', 'FastAPI', 'Pandas', 'OpenAI API', 'LangChain', 'ChromaDB', 'PostgreSQL', 'Docker'],
+      image: project10PythonSales,
+      description: 'Interactive Python data analysis dashboard to visualize sales performance, correlation matrices, and extract 3D profit optimization insights.',
+      detailedDescription: 'Develop a high-performance Python analytics application using Pandas, NumPy, Matplotlib, Seaborn, and Streamlit. Build multi-variable correlation heatmaps, geospatial sales maps, and 3D surface visualizations.',
+      challenge: 'Visualizing non-linear discount vs quantity relationships and generating actionable regional business recommendations.',
+      tools: ['Python 3.12', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Plotly', 'Streamlit', 'Kaggle Dataset'],
       workflow: [
-        { step: '01', title: 'Async Ingestion & Scraping', desc: 'Building asynchronous Python scraping and PDF extraction engines with PyMuPDF and regex sanitizers.' },
-        { step: '02', title: 'Vector Embeddings & RAG', desc: 'Generating dense vector representations of applicant resumes and calculating cosine similarity in ChromaDB.' },
-        { step: '03', title: 'LLM Scoring & ATS Feedback', desc: 'Using LangChain and OpenAI structured outputs to generate precise ATS gap analysis and bullet improvements.' },
-        { step: '04', title: 'Dockerized REST API Service', desc: 'Deploying high-throughput FastAPI endpoints with automated Swagger docs and CI/CD test automation.' }
+        { step: '01', title: 'Data Cleaning & Prep', desc: 'Loading Kaggle sales dataset, handling nulls, and standardizing categorical columns.' },
+        { step: '02', title: 'Correlation Heatmaps', desc: 'Computing Seaborn Pearson correlation matrix across sales, profit, quantity, and discount.' },
+        { step: '03', title: '3D Profit Surface Plot', desc: 'Rendering interactive 3D Matplotlib surface mesh showing optimal discount thresholds.' },
+        { step: '04', title: 'Streamlit Deployment', desc: 'Packaging the EDA workflow into a responsive Streamlit dashboard with real-time filters.' }
       ],
       keyDeliverables: [
-        'Production-Grade Python & FastAPI Backend Codebase',
-        'RAG Vector Search Engine with Vector Database',
-        'Interactive Testing UI with Streamlit/React',
-        'Automated CI/CD Pipeline & Docker Container'
+        'Full Python Jupyter Notebook & Streamlit App',
+        'Interactive 3D Surface Plots & Correlation Heatmaps',
+        'Global Sales Geospatial Choropleth Visual',
+        'Statistical Executive Findings Report'
       ],
       courseLink: '/courses/python-programming-data-analytics-certified-course',
       courseName: 'Python Programming & Data Analytics',
-      metrics: '10,000+ Resumes Processed, Sub-200ms API',
-      previewBadge: 'Python 3.12 + FastAPI + AI'
+      metrics: '$2.45M Sales Analyzed, 3D Plot, 22h Build',
+      previewBadge: 'Python 3.12 + Streamlit + 3D'
     }
   ];
 
@@ -1495,6 +1509,17 @@ const Home = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* View All Projects Gallery CTA */}
+        <div className="pt-4 text-center">
+          <Link
+            to="/gallery"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#071F3F] to-[#0F62FE] hover:from-[#05162D] hover:to-[#0043CE] text-white text-sm font-extrabold shadow-xl hover:shadow-2xl hover:scale-102 transition-all"
+          >
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>Explore All 12 Industrial Capstones in Projects Gallery →</span>
+          </Link>
         </div>
 
         {/* Interactive Project Details & Blueprint Modal */}

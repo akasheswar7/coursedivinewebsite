@@ -24,6 +24,7 @@ import OurTeam from './pages/OurTeam';
 import Careers from './pages/Careers';
 import Testimonials from './pages/Testimonials';
 import Contact from './pages/Contact';
+import Gallery from './pages/Gallery';
 
 import Blog from './pages/Blog';
 import BlogDetails from './pages/BlogDetails';
@@ -125,6 +126,9 @@ function App() {
                     <Route path="/reviews" element={<Testimonials />} />
                     <Route path="/student-testimonials" element={<Testimonials />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/gallery" element={<Gallery />} />
+                    <Route path="/projects" element={<Gallery />} />
+                    <Route path="/projects-gallery" element={<Gallery />} />
 
 
                     <Route path="/blog" element={<Blog />} />
