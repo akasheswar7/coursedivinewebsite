@@ -1701,67 +1701,6 @@ const Home = () => {
 
       </section>
 
-
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-extrabold tracking-widest text-[#0F62FE] uppercase">
-            👨‍🏫 Industry Mentors
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            Learn From People Who Do the Work.
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600 font-medium">
-            Real engineering leads and practitioners bringing production experience straight to your screen.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {trainers.map((trainer, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-5 text-center group hover:-translate-y-1"
-            >
-              <div className="space-y-4 flex flex-col items-center">
-                <div className="relative">
-                  <img
-                    src={trainer.avatar}
-                    alt={trainer.name}
-                    className="w-20 h-20 rounded-2xl object-cover shadow-md group-hover:scale-105 transition-transform"
-                  />
-                  <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full border-2 border-white">
-                    VERIFIED
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-extrabold text-slate-900 text-base">{trainer.name}</h3>
-                  <p className="text-xs text-[#0F62FE] font-bold mt-0.5">{trainer.title}</p>
-                  <p className="text-[11px] text-slate-500 font-medium mt-1">{trainer.company}</p>
-                </div>
-              </div>
-
-              <div className="space-y-3 pt-3 border-t border-slate-100 text-left">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 font-medium">{trainer.experience}</span>
-                  <span className="font-black text-amber-500 flex items-center gap-1">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    {trainer.rating}
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-1">
-                  {trainer.expertise.map((exp, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-semibold">
-                      {exp}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-[#071F3F] rounded-3xl p-6 sm:p-12 text-white border border-[#0D2F5D] shadow-2xl space-y-8">
           
@@ -1948,113 +1887,6 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 bg-gradient-to-b from-[#F0F6FF] via-[#E8F1FC] to-[#F8FAFD] p-6 sm:p-12 rounded-3xl border border-blue-100/80 shadow-sm">
-
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <span className="text-xs font-extrabold tracking-widest text-[#0F62FE] uppercase">
-              🌟 Real Student Stories
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-1">
-              Hear Directly From Course Divine Alumni
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 font-medium mt-1">
-              Watch video interviews and read verified placement reviews from our graduates.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setTestimonialTab('all')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
-                testimonialTab === 'all'
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'bg-white text-slate-600 border border-slate-200'
-              }`}
-            >
-              All Reviews
-            </button>
-            <button
-              onClick={() => setTestimonialTab('videos')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                testimonialTab === 'videos'
-                  ? 'bg-[#0F62FE] text-white shadow-sm'
-                  : 'bg-white text-slate-600 border border-slate-200'
-              }`}
-            >
-              <Play className="w-3.5 h-3.5 fill-current" /> Video Stories
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTestimonials.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1"
-            >
-              {item.isVideo && (
-                <div
-                  onClick={() => setSelectedVideoTestimonial(item)}
-                  className="relative aspect-video bg-slate-900 cursor-pointer overflow-hidden group/vid"
-                >
-                  <img
-                    src={item.thumbnail}
-                    alt={item.name}
-                    className="w-full h-full object-cover group-hover/vid:scale-105 transition-transform duration-500 opacity-80"
-                  />
-                  <div className="absolute inset-0 bg-slate-950/40 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-[#0F62FE] text-white flex items-center justify-center shadow-2xl group-hover/vid:scale-110 transition-transform">
-                      <Play className="w-5 h-5 fill-white ml-0.5" />
-                    </div>
-                  </div>
-                  <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between text-[11px] text-white font-bold">
-                    <span>🎬 Watch Video Story</span>
-                    <span className="bg-emerald-500 text-white px-2 py-0.5 rounded text-[10px]">{item.hike}</span>
-                  </div>
-                </div>
-              )}
-
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-amber-400">
-                      {[...Array(item.rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
-                      {item.hike}
-                    </span>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                    "{item.message}"
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
-                  <img
-                    src={item.photo}
-                    alt={item.name}
-                    className="w-11 h-11 rounded-2xl object-cover border border-slate-200 shadow-sm"
-                  />
-                  <div>
-                    <h4 className="font-extrabold text-slate-900 text-sm flex items-center gap-1">
-                      {item.name}
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                    </h4>
-                    <p className="text-xs text-[#0F62FE] font-bold">{item.role}</p>
-                    <p className="text-[11px] text-slate-500 font-medium">{item.company} • {item.course}</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          ))}
-        </div>
-      </section>
-
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-[#071F3F] via-[#0F62FE] to-[#071F3F] rounded-3xl p-8 sm:p-14 text-white text-center shadow-2xl space-y-6 relative overflow-hidden">
           <div className="max-w-3xl mx-auto space-y-4 relative z-10">
@@ -2136,12 +1968,6 @@ const Home = () => {
         onClose={() => setEnrollingCourse(null)}
         course={enrollingCourse}
         onEnrollmentSuccess={() => {}}
-      />
-
-      <VideoModal
-        isOpen={!!selectedVideoTestimonial}
-        onClose={() => setSelectedVideoTestimonial(null)}
-        testimonial={selectedVideoTestimonial}
       />
 
       {finderOpen && (
