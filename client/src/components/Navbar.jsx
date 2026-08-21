@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import ecellLogo from '../assets/ecell-iit-tirupati.png';
+import SocialLinks from './SocialLinks';
 
 
 const Navbar = () => {
@@ -69,6 +70,29 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#071F3F] text-white shadow-md select-none border-b border-[#0D2F5D]">
+      {/* Top Mini Utility Bar with Admissions hotline + all 5 Social Links */}
+      <div className="bg-[#041226] text-slate-300 py-1.5 px-3 sm:px-6 lg:px-8 border-b border-[#0D2F5D]/60 text-xs hidden md:flex items-center justify-between">
+        <div className="flex items-center gap-4 text-[11px] text-slate-300/90 font-medium">
+          <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Admissions & Hiring Open 2026</span>
+          </span>
+          <span className="text-slate-600">•</span>
+          <a href="tel:+919100348679" className="hover:text-white transition">
+            📞 +91 91003 48679
+          </a>
+          <span className="text-slate-600">•</span>
+          <a href="mailto:coursedivine@gmail.com" className="hover:text-white transition">
+            ✉️ coursedivine@gmail.com
+          </a>
+        </div>
+
+        <div className="flex items-center gap-3 text-[11px]">
+          <span className="text-sky-300 font-bold uppercase tracking-wider text-[10px]">Follow Us:</span>
+          <SocialLinks size="sm" />
+        </div>
+      </div>
+
       <div className="max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-[72px] gap-3 sm:gap-4">
           
@@ -545,6 +569,16 @@ const Navbar = () => {
                   </button>
                 </div>
               )}
+
+              {/* Mobile Social Links */}
+              <div className="pt-4 mt-2 border-t border-brand-800/80 text-center space-y-2">
+                <span className="text-[11px] font-bold text-sky-300 uppercase tracking-wider block">
+                  Follow Us On Social Media
+                </span>
+                <div className="flex justify-center">
+                  <SocialLinks size="sm" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

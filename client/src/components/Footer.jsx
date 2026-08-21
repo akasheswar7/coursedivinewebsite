@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useNotification } from '../context/NotificationContext';
 import logoImg from '../assets/logo.png';
+import SocialLinks from './SocialLinks';
 
 
 const Footer = () => {
@@ -104,39 +105,11 @@ const Footer = () => {
             <p className="text-slate-300/80 text-sm leading-relaxed max-w-sm">
               Course Divine is a premier technology training institute empowering learners and professionals with industry-led masterclasses, live capstone projects, guaranteed internship opportunities, and verified placement pathways.
             </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-brand-900/80 border border-brand-700/50 flex items-center justify-center text-slate-300 hover:text-white hover:bg-brand-600 transition"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-brand-900/80 border border-brand-700/50 flex items-center justify-center text-slate-300 hover:text-white hover:bg-brand-600 transition"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-brand-900/80 border border-brand-700/50 flex items-center justify-center text-slate-300 hover:text-white hover:bg-brand-600 transition"
-              >
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-9 h-9 rounded-lg bg-brand-900/80 border border-brand-700/50 flex items-center justify-center text-slate-300 hover:text-white hover:bg-brand-600 transition"
-              >
-                <Youtube className="w-4 h-4" />
-              </a>
+            <div className="pt-2">
+              <span className="text-xs font-bold text-sky-400 block mb-2 uppercase tracking-wider">
+                Follow Us On Social Media
+              </span>
+              <SocialLinks size="md" />
             </div>
           </div>
 

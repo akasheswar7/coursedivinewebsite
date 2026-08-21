@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, MessageSquare, Loader2 } from 'lucide-react';
 import api from '../services/api';
 import { useNotification } from '../context/NotificationContext';
+import SocialLinks from '../components/SocialLinks';
 
 const Contact = () => {
   const { showToast } = useNotification();
@@ -141,6 +142,15 @@ const Contact = () => {
               <p className="text-xs text-brand-200/80 leading-relaxed">
                 Prior appointment is recommended for campus tours and 1-on-1 counseling with senior tech directors.
               </p>
+            </div>
+
+            {/* Official Social Media Channels */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
+              <h4 className="font-extrabold text-slate-900 text-sm">Official Social Channels</h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Follow Course Divine on Instagram, Facebook, YouTube, X, and Pinterest for latest tech updates, free workshops, and placement drives:
+              </p>
+              <SocialLinks size="lg" variant="light" />
             </div>
           </div>
 
