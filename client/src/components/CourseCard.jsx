@@ -94,54 +94,43 @@ const CourseCard = ({ course }) => {
   return (
     <div className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col h-full overflow-hidden text-center justify-between p-3 sm:p-4">
       
-      {/* Course Thumbnail Image or Branded Vector Fallback */}
+      {/* Course Neat Branded Poster */}
       <Link
         to={`/courses/${course.slug}`}
         className="relative block aspect-square max-h-48 sm:max-h-56 overflow-hidden rounded-xl bg-slate-100 mb-2.5 sm:mb-3 select-none"
       >
-        {!imgError && (course.thumbnail || course.image) ? (
-          <img
-            src={course.thumbnail || course.image}
-            alt={course.title}
-            onError={() => setImgError(true)}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
-        ) : (
-          /* Dynamic Branded Course Poster Fallback */
-          <div className={`w-full h-full bg-gradient-to-br ${theme.bg} p-4 flex flex-col justify-between relative overflow-hidden text-white group-hover:scale-105 transition-transform duration-300`}>
-            {/* Background glowing sphere */}
-            <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className={`w-full h-full bg-gradient-to-br ${theme.bg} p-4 flex flex-col justify-between relative overflow-hidden text-white group-hover:scale-105 transition-transform duration-300`}>
+          {/* Background glowing sphere */}
+          <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
-            {/* Top Row: Brand pill + verified accreditation */}
-            <div className="flex items-center justify-between z-10">
-              <span className="text-[10px] font-black tracking-widest uppercase bg-white/20 px-2 py-0.5 rounded backdrop-blur-sm">
-                COURSE DIVINE
-              </span>
-              <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-300 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                <span>APSCHE</span>
-                <Check className="w-2.5 h-2.5 text-emerald-400" />
-              </div>
-            </div>
-
-            {/* Center Icon & Title Abbreviation */}
-            <div className="flex flex-col items-center justify-center my-auto z-10 space-y-2">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shadow-lg border border-white/20">
-                <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-brand-200" />
-              </div>
-              <div className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-white line-clamp-2 px-2 text-center drop-shadow-md">
-                {course.title.replace('Certified Course', '').replace('Training', '').trim()}
-              </div>
-            </div>
-
-            {/* Bottom Category Badge */}
-            <div className={`z-10 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md border ${theme.accent}`}>
-              {course.category}
+          {/* Top Row: Brand pill + verified accreditation */}
+          <div className="flex items-center justify-between z-10">
+            <span className="text-[10px] font-black tracking-widest uppercase bg-white/20 px-2 py-0.5 rounded backdrop-blur-sm">
+              COURSE DIVINE
+            </span>
+            <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-300 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30">
+              <span>APSCHE</span>
+              <Check className="w-2.5 h-2.5 text-emerald-400" />
             </div>
           </div>
-        )}
 
-        {/* Black "Sale!" Badge from screenshot */}
+          {/* Center Icon & Title Abbreviation */}
+          <div className="flex flex-col items-center justify-center my-auto z-10 space-y-2">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shadow-lg border border-white/20">
+              <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-brand-200" />
+            </div>
+            <div className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-white line-clamp-2 px-2 text-center drop-shadow-md">
+              {course.title.replace('Certified Course', '').replace('Training', '').trim()}
+            </div>
+          </div>
+
+          {/* Bottom Category Badge */}
+          <div className={`z-10 text-[8px] sm:text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md border ${theme.accent}`}>
+            {course.category}
+          </div>
+        </div>
+
+        {/* Black "Sale!" Badge */}
         <div className="absolute top-2 right-2 bg-[#222222] text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded shadow-sm z-20">
           Sale!
         </div>
