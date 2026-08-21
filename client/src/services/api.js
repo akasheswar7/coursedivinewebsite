@@ -256,8 +256,6 @@ export const fallbackStore = {
       subtitle: 'Core Data Services (CDS), ABAP RESTful Programming (RAP), OData & AMDP.',
       description: 'Master modern SAP ABAP programming paradigms, CDS views, AMDP procedures, and building Fiori apps with the ABAP RESTful Application Programming Model.',
       category: 'Enterprise ERP & SAP',
-      thumbnail: project6SapS4Hana,
-      image: project6SapS4Hana,
       level: 'Intermediate to Advanced',
       duration: '100 Hours (12 Weeks)',
       price: 575,
