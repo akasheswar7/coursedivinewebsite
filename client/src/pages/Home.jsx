@@ -51,6 +51,7 @@ import {
 } from 'lucide-react';
 import api, { fallbackStore } from '../services/api';
 import { useNotification } from '../context/NotificationContext';
+import CourseCard from '../components/CourseCard';
 import EnrollmentModal from '../components/EnrollmentModal';
 import VideoModal from '../components/VideoModal';
 import {
@@ -1033,87 +1034,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredTopCourses.slice(0, 6).map((course) => (
-            <div
-              key={course._id}
-              className="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1"
-            >
-              <Link to={`/courses/${course.slug}`} className="relative aspect-[16/9] overflow-hidden bg-slate-100">
-                <img
-                  src={course.thumbnail}
-                  alt={course.title}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80';
-                  }}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-
-                <div className="absolute top-3 left-3 bg-[#071F3F] text-white text-[11px] font-black px-3 py-1 rounded-lg shadow-sm border border-slate-700">
-                  {course.category}
-                </div>
-                <div className="absolute bottom-3 right-3 bg-white/95 text-slate-900 text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  {course.rating || 4.9}
-                </div>
-              </Link>
-
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                    <Clock className="w-3.5 h-3.5 text-[#0F62FE]" />
-                    <span>{course.duration}</span>
-                    <span>•</span>
-                    <span>{course.level || 'All Levels'}</span>
-                  </div>
-
-                  <Link to={`/courses/${course.slug}`}>
-                    <h3 className="font-extrabold text-slate-900 text-base sm:text-lg group-hover:text-[#0F62FE] transition line-clamp-2">
-                      {course.title}
-                    </h3>
-                  </Link>
-
-                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                    {course.subtitle || course.description}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
-                  <div>
-                    <span className="text-xl font-black text-slate-900">
-                      ${Number(course.discountPrice || course.price || 499).toLocaleString('en-US')}.00
-                    </span>
-                    {course.discountPrice && Number(course.price || 0) > Number(course.discountPrice || 0) && (
-                      <span className="text-xs text-slate-400 line-through ml-2">
-                        ${Number(course.price || 0).toLocaleString('en-US')}.00
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Link
-                      to={`/courses/${course.slug}`}
-                      className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs transition"
-                    >
-                      Details
-                    </Link>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!isInCart(course._id)) {
-                          addToCart(course);
-                        }
-                        navigate('/checkout');
-                      }}
-                      className="px-4 py-2.5 rounded-xl bg-[#0F62FE] hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition flex items-center gap-1.5"
-                    >
-                      Enroll Now
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
+            <CourseCard key={course._id} course={course} />
           ))}
         </div>
       </section>

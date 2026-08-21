@@ -22,21 +22,6 @@ import {
   centuryPulpPaperLogo
 } from '../assets/placements';
 
-import {
-  project1AnsysBracket,
-  project2BiSalesAnalytics,
-  project3CyberSecurity,
-  project4AiChurn,
-  project5Ecommerce,
-  project6SapS4Hana,
-  project7EcoFutureDesign,
-  project8ClaudeAi,
-  project9DigitalMarketing,
-  project10PythonSales,
-  project11SolidworksGearbox,
-  project12Ecosystem3D
-} from '../assets/gallery';
-
 // In-Memory Fallback Seed Store with All Verified Course Divine Courses & US Dollars ($)
 export const fallbackStore = {
   categories: [
@@ -57,8 +42,6 @@ export const fallbackStore = {
       subtitle: 'Python, Machine Learning, Deep Learning, NLP & Generative AI.',
       description: 'Comprehensive industry training covering predictive modeling, neural networks, LLMs, statistics, and live capstone deployments with guaranteed internship.',
       category: 'Data Science & AI',
-      thumbnail: project2BiSalesAnalytics,
-      image: project2BiSalesAnalytics,
       level: 'Beginner to Advanced',
       duration: '120 Hours (14 Weeks)',
       price: 599,
@@ -75,8 +58,6 @@ export const fallbackStore = {
       subtitle: 'SEO, Google Ads, Meta Ads, Performance Marketing & GA4.',
       description: 'Master omnichannel customer acquisition, brand storytelling, high-converting ad funnels, content marketing, and growth analytics on real ad budgets.',
       category: 'Design & Management',
-      thumbnail: project9DigitalMarketing,
-      image: project9DigitalMarketing,
       level: 'All Levels',
       duration: '80 Hours (10 Weeks)',
       price: 450,
@@ -93,8 +74,6 @@ export const fallbackStore = {
       subtitle: 'Part Modeling, Assembly, Sheet Metal, CSWA & CSWP Prep.',
       description: 'Industry-standard mechanical product modeling, parametric sheet metal fabrication, motion simulation, drawing detailing, and CSWA/CSWP preparation.',
       category: 'Engineering & Industrial Tech',
-      thumbnail: project11SolidworksGearbox,
-      image: project11SolidworksGearbox,
       level: 'Intermediate',
       duration: '90 Hours (12 Weeks)',
       price: 520,
@@ -111,8 +90,6 @@ export const fallbackStore = {
       subtitle: 'Static Structural, Thermal Analysis, Fluent CFD & Modal Dynamics.',
       description: 'Finite element analysis (FEA) and computational fluid dynamics (CFD) using ANSYS Workbench, meshing algorithms, structural failure prediction, and thermal flows.',
       category: 'Engineering & Industrial Tech',
-      thumbnail: project1AnsysBracket,
-      image: project1AnsysBracket,
       level: 'Advanced',
       duration: '100 Hours (12 Weeks)',
       price: 580,
@@ -129,8 +106,6 @@ export const fallbackStore = {
       subtitle: 'Core Python, Pandas, NumPy, SQL, Power BI & Data Automation.',
       description: 'Go from syntax to building data automation pipelines, web scraping tools, SQL analytics pipelines, and interactive BI dashboards.',
       category: 'Software & Web Development',
-      thumbnail: project10PythonSales,
-      image: project10PythonSales,
       level: 'Beginner',
       duration: '75 Hours (8 Weeks)',
       price: 420,
@@ -147,8 +122,6 @@ export const fallbackStore = {
       subtitle: 'Figma, Design Systems, User Research, Wireframing & Prototyping.',
       description: 'Craft user-centric interfaces, high-fidelity prototypes, user research interviews, accessibility compliance, and design system architectures in Figma.',
       category: 'Design & Management',
-      thumbnail: project7EcoFutureDesign,
-      image: project7EcoFutureDesign,
       level: 'All Levels',
       duration: '85 Hours (10 Weeks)',
       price: 460,
@@ -300,8 +273,6 @@ export const fallbackStore = {
       subtitle: 'Generative AI, Large Language Models, Few-Shot Prompting, LangChain & Agentic Workflows.',
       description: 'Learn professional prompt architecture, Chain-of-Thought reasoning, context window optimization, RAG embedding integrations, and building AI agents.',
       category: 'Data Science & AI',
-      thumbnail: project8ClaudeAi,
-      image: project8ClaudeAi,
       level: 'Beginner to Advanced',
       duration: '60 Hours (6 Weeks)',
       price: 575,
