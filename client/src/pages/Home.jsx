@@ -53,7 +53,6 @@ import api, { fallbackStore } from '../services/api';
 import { useNotification } from '../context/NotificationContext';
 import CourseCard from '../components/CourseCard';
 import EnrollmentModal from '../components/EnrollmentModal';
-import VideoModal from '../components/VideoModal';
 import {
   project1AnsysBracket,
   project2BiSalesAnalytics,
@@ -109,7 +108,6 @@ const Home = () => {
   const { showToast } = useNotification();
 
   const [enrollingCourse, setEnrollingCourse] = useState(null);
-  const [selectedVideoTestimonial, setSelectedVideoTestimonial] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [hoveredProjectId, setHoveredProjectId] = useState(null);
   const [projectModalTab, setProjectModalTab] = useState('overview');
@@ -135,7 +133,6 @@ const Home = () => {
   const [activeCareerTrack, setActiveCareerTrack] = useState('data-ai');
   const [projectCategory, setProjectCategory] = useState('All');
   const [lmsTab, setLmsTab] = useState('dashboard');
-  const [testimonialTab, setTestimonialTab] = useState('all');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -480,142 +477,6 @@ const Home = () => {
   const filteredProjects = showcaseProjects.filter((p) => {
     if (projectCategory === 'All') return true;
     return p.category === projectCategory;
-  });
-
-  const trainers = [
-    {
-      name: 'Dr. Rajesh Varma',
-      title: 'Principal AI & Data Architect',
-      experience: '14+ Years Experience',
-      company: 'Ex-Amazon & Microsoft AI',
-      expertise: ['Deep Learning', 'NLP & LLMs', 'Python', 'MLOps'],
-      rating: 4.96,
-      students: '4,800+',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
-    },
-    {
-      name: 'Sneha Kulkarni',
-      title: 'Senior CAD/CAE Simulation Lead',
-      experience: '11+ Years Experience',
-      company: 'Ex-Tata Motors & Siemens CAE',
-      expertise: ['SolidWorks CSWP', 'ANSYS FEA', 'CFD Fluent', 'Product Design'],
-      rating: 4.94,
-      students: '3,200+',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80'
-    },
-    {
-      name: 'Arjun Mehta',
-      title: 'Head of Growth & Performance Marketing',
-      experience: '9+ Years Experience',
-      company: 'Ex-Ogilvy & Flipkart Growth',
-      expertise: ['Google Ads', 'Meta Ad Funnels', 'Technical SEO', 'GA4 Analytics'],
-      rating: 4.92,
-      students: '3,900+',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80'
-    },
-    {
-      name: 'Priya Sundaram',
-      title: 'Lead Cloud & Full Stack Architect',
-      experience: '10+ Years Experience',
-      company: 'Ex-Oracle & AWS Certified Lead',
-      expertise: ['React & Next.js', 'Node.js', 'AWS Infrastructure', 'Docker'],
-      rating: 4.95,
-      students: '4,100+',
-      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80'
-    }
-  ];
-
-  const studentTestimonials = [
-    {
-      id: 't1',
-      name: 'Aditya Nair',
-      role: 'Senior CAE Simulation Engineer',
-      company: 'Bosch Mobility',
-      hike: '+140% Salary Hike',
-      course: 'ANSYS FEA & CFD Simulation',
-      batch: '2025 Placement Batch',
-      photo: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
-      thumbnail: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80',
-      videoUrl: '',
-      isVideo: true,
-      rating: 5,
-      message: 'The live ANSYS boundary problem sessions and guaranteed internship at Course Divine bridged the exact gap between college theory and enterprise CAE design. Landed a core mechanical role at Bosch with a 140% package jump!'
-    },
-    {
-      id: 't2',
-      name: 'Ananya Roy',
-      role: 'Data Scientist',
-      company: 'Amazon Web Services',
-      hike: '+180% Salary Hike',
-      course: 'Data Science & AI Masterclass',
-      batch: '2025 AI Track',
-      photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-      thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
-      videoUrl: '',
-      isVideo: true,
-      rating: 5,
-      message: 'From writing basic pandas code to building production LLMs and predictive pipelines, Course Divine mentors gave 1-on-1 code reviews that helped me clear 5 technical interview rounds at Amazon!'
-    },
-    {
-      id: 't3',
-      name: 'Vikramaditya Rao',
-      role: 'Full Stack Engineer',
-      company: 'TCS Digital',
-      hike: '+125% Salary Hike',
-      course: 'Full Stack Python & Web Development',
-      batch: '2025 Full Stack Batch',
-      photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-      thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
-      videoUrl: '',
-      isVideo: true,
-      rating: 5,
-      message: 'The capstone projects weren’t simple to-do apps—we built full enterprise microservices with payment gateways and authentication. It made my resume stand out immediately.'
-    },
-    {
-      id: 't4',
-      name: 'Sneha Patil',
-      role: 'Performance Marketing Lead',
-      company: 'Flipkart Growth',
-      hike: '+110% Salary Hike',
-      course: 'Digital Marketing & Growth Mastery',
-      batch: '2025 Growth Track',
-      photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
-      isVideo: false,
-      rating: 5,
-      message: 'Managing real live ad spend budgets during the Course Divine internship gave me hands-on confidence with GA4 and ROAS optimization that theoretical courses never offer.'
-    },
-    {
-      id: 't5',
-      name: 'Karan Malhotra',
-      role: 'CAD Design Engineer',
-      company: 'Tata Motors',
-      hike: 'Direct Campus Placement',
-      course: 'SolidWorks 3D CAD Certified Course',
-      batch: '2026 Core Engineering Batch',
-      photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-      isVideo: false,
-      rating: 5,
-      message: 'Cleared both my CSWA and CSWP certifications in the first attempt. The sheet metal and parametric modeling modules were world-class!'
-    },
-    {
-      id: 't6',
-      name: 'Pooja Verma',
-      role: 'Senior UI/UX Designer',
-      company: 'Capgemini FinTech',
-      hike: '+135% Salary Hike',
-      course: 'UI/UX Design Masterclass',
-      batch: '2025 Product Design Track',
-      photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-      isVideo: false,
-      rating: 5,
-      message: 'The design systems and user research case studies we built in Figma became the centerpiece of my portfolio. Recruiter feedback was phenomenal.'
-    }
-  ];
-
-  const filteredTestimonials = studentTestimonials.filter((t) => {
-    if (testimonialTab === 'videos') return t.isVideo;
-    if (testimonialTab === 'reviews') return !t.isVideo;
-    return true;
   });
 
   return (
