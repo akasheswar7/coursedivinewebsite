@@ -147,6 +147,6 @@ const courseSchema = new mongoose.Schema(
 );
 
 // Indexes for fast searching
-courseSchema.index({ title: 'text', description: 'text', category: 'text' });
+courseSchema.index({ title: 'text', description: 'text', category: 'text' }, { default_language: 'none', language_override: 'none' });
 
 module.exports = mongoose.model('Course', courseSchema);
