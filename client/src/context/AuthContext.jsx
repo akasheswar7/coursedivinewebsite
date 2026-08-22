@@ -58,6 +58,30 @@ export const AuthProvider = ({ children }) => {
       // Check customer database in storage
     }
 
+    // Master Admin instant authentication
+    if (
+      cleanEmail === 'admin@coursedivine.com' ||
+      cleanEmail === 'admin@learncoursedivine.com' ||
+      cleanEmail === 'admin'
+    ) {
+      if (password === 'Admin@123' || password === 'admin' || password === 'Admin@2026' || password === 'admin123') {
+        const adminUser = {
+          _id: 'admin_master_1',
+          name: 'Course Divine Administrator',
+          email: 'admin@coursedivine.com',
+          role: 'admin',
+          avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=Admin&backgroundColor=071F3F&textColor=ffffff',
+          token: 'admin_jwt_' + Date.now()
+        };
+        setUser(adminUser);
+        localStorage.setItem('cd_token', adminUser.token);
+        localStorage.setItem('cd_user', JSON.stringify(adminUser));
+        return { success: true, user: adminUser };
+      } else {
+        return { success: false, message: 'Incorrect password for Admin account. (Default: Admin@123)' };
+      }
+    }
+
     // Check local database for registered customer accounts
     const db = safeJsonParse(localStorage.getItem('cd_registered_users_db'), []);
     const existingUser = db.find((u) => u.email && u.email.toLowerCase() === cleanEmail);
