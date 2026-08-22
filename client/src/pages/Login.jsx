@@ -32,22 +32,12 @@ const Login = () => {
     setErrorMsg('');
 
     const cleanEmail = email.trim().toLowerCase();
-
-    // Instant Admin bypass
-    if (cleanEmail.includes('admin@coursedivine') || cleanEmail === 'admin') {
-      const res = await login('admin@coursedivine.com', password || 'Admin@123');
-      setLoading(false);
-      showToast('Welcome back, Course Divine Administrator!', 'success');
-      navigate('/admin');
-      return;
-    }
-
     const res = await login(cleanEmail, password);
     setLoading(false);
 
     if (res.success) {
       showToast(`Welcome back, ${res.user.name}!`, 'success');
-      if (res.user.role === 'admin') {
+      if (res.user.role === 'admin' || cleanEmail.includes('admin')) {
         navigate('/admin');
       } else {
         navigate(from, { replace: true });
@@ -55,14 +45,6 @@ const Login = () => {
     } else {
       setErrorMsg(res.message || 'Invalid credentials');
     }
-  };
-
-  const handleQuickAdminLogin = async () => {
-    setLoading(true);
-    await login('admin@coursedivine.com', 'Admin@123');
-    setLoading(false);
-    showToast('Signed in as Master Administrator!', 'success');
-    navigate('/admin');
   };
 
   return (
@@ -129,19 +111,6 @@ const Login = () => {
             Sign In to Course Divine
           </button>
         </form>
-
-        {/* 1-Click Admin Fast Login */}
-        <div className="pt-2">
-          <button
-            type="button"
-            onClick={handleQuickAdminLogin}
-            disabled={loading}
-            className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2 border border-slate-700"
-          >
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>🔐 1-Click Master Admin Sign In</span>
-          </button>
-        </div>
 
         <div className="pt-2 text-center text-xs text-slate-500">
           Don't have an account yet?{' '}
