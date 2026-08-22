@@ -11,12 +11,12 @@ import {
   ChevronRight,
   ArrowRight
 } from 'lucide-react';
-import api, { fallbackStore } from '../services/api';
+import api, { fallbackStore, getLiveCourses } from '../services/api';
 import CourseCard from '../components/CourseCard';
 
 const Courses = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [courses, setCourses] = useState(fallbackStore.courses);
+  const [courses, setCourses] = useState(() => getLiveCourses());
   const [categories, setCategories] = useState(fallbackStore.categories);
   const [loading, setLoading] = useState(false);
 
@@ -49,8 +49,17 @@ const Courses = () => {
     setCurrentPage(1);
   }, [search, selectedCategory, selectedLevel, sortBy]);
 
+  // Listen to live course add/delete/update events from Admin
+  useEffect(() => {
+    const handleUpdate = () => {
+      filterAndSetCourses();
+    };
+    window.addEventListener('cd_courses_updated', handleUpdate);
+    return () => window.removeEventListener('cd_courses_updated', handleUpdate);
+  }, [search, selectedCategory, selectedLevel, sortBy]);
+
   const filterAndSetCourses = () => {
-    let list = [...fallbackStore.courses];
+    let list = getLiveCourses();
 
     // 1. Instant Multi-keyword Search Matching
     if (search && search.trim()) {

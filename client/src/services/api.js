@@ -1545,4 +1545,170 @@ api.interceptors.response.use(
   }
 );
 
+// Helper for safely reading JSON from localStorage
+const safeStorageRead = (key, fallback) => {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+
+// Unified Synchronized Course Store Manager
+export const getLiveCourses = () => {
+  const customCourses = safeStorageRead('cd_custom_courses', []);
+  const deletedIds = safeStorageRead('cd_deleted_course_ids', []);
+  
+  // Combine base seed courses + custom added/edited courses
+  const baseCourses = fallbackStore.courses.filter(c => !deletedIds.includes(c._id) && !deletedIds.includes(c.slug));
+  
+  // Custom courses take precedence or get appended
+  const customFiltered = customCourses.filter(c => !deletedIds.includes(c._id) && !deletedIds.includes(c.slug));
+  
+  // Merge by replacing if ID exists, or prepending
+  const mergedMap = new Map();
+  // Insert base courses
+  baseCourses.forEach(c => mergedMap.set(c._id, c));
+  // Override or insert custom courses
+  customFiltered.forEach(c => mergedMap.set(c._id, c));
+  
+  return Array.from(mergedMap.values());
+};
+
+export const getLiveCourseBySlug = (slug) => {
+  const courses = getLiveCourses();
+  return courses.find(c => c.slug === slug || c._id === slug) || null;
+};
+
+export const saveCourseLive = async (courseData) => {
+  const customCourses = safeStorageRead('cd_custom_courses', []);
+  const deletedIds = safeStorageRead('cd_deleted_course_ids', []);
+  
+  const id = courseData._id || 'c_' + Date.now();
+  const slug = courseData.slug || courseData.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  
+  const formattedCourse = {
+    ...courseData,
+    _id: id,
+    slug: slug,
+    isPublished: courseData.isPublished !== undefined ? courseData.isPublished : true,
+    updatedAt: new Date().toISOString()
+  };
+  
+  // Remove from deleted list if re-adding
+  const updatedDeleted = deletedIds.filter(did => did !== id && did !== slug);
+  localStorage.setItem('cd_deleted_course_ids', JSON.stringify(updatedDeleted));
+  
+  // Add or update in custom courses
+  const existingIdx = customCourses.findIndex(c => c._id === id || c.slug === slug);
+  if (existingIdx >= 0) {
+    customCourses[existingIdx] = formattedCourse;
+  } else {
+    customCourses.unshift(formattedCourse);
+  }
+  localStorage.setItem('cd_custom_courses', JSON.stringify(customCourses));
+  
+  // Dispatch global window event so all components react instantly
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cd_courses_updated', { detail: formattedCourse }));
+  }
+  
+  // Sync to backend API if available
+  try {
+    if (courseData._id && !courseData._id.startsWith('c_')) {
+      await api.put(`/courses/${courseData._id}`, formattedCourse);
+    } else {
+      await api.post('/courses', formattedCourse);
+    }
+  } catch (err) {
+    // Graceful offline fallback
+  }
+  
+  return formattedCourse;
+};
+
+export const deleteCourseLive = async (courseId) => {
+  const customCourses = safeStorageRead('cd_custom_courses', []);
+  const deletedIds = safeStorageRead('cd_deleted_course_ids', []);
+  
+  // Find course to get slug as well
+  const target = customCourses.find(c => c._id === courseId) || fallbackStore.courses.find(c => c._id === courseId);
+  const targetSlug = target?.slug;
+  
+  // Add to deleted IDs
+  const newDeleted = Array.from(new Set([...deletedIds, courseId, targetSlug].filter(Boolean)));
+  localStorage.setItem('cd_deleted_course_ids', JSON.stringify(newDeleted));
+  
+  // Remove from custom courses
+  const updatedCustom = customCourses.filter(c => c._id !== courseId && c.slug !== targetSlug);
+  localStorage.setItem('cd_custom_courses', JSON.stringify(updatedCustom));
+  
+  // Dispatch global window event
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cd_courses_updated', { detail: { deletedId: courseId } }));
+  }
+  
+  // Sync deletion to backend API if available
+  try {
+    await api.delete(`/courses/${courseId}`);
+  } catch (err) {
+    // Graceful offline fallback
+  }
+  
+  return true;
+};
+
+export const bulkImportCoursesLive = async (coursesList) => {
+  if (!Array.isArray(coursesList) || coursesList.length === 0) return 0;
+  
+  const customCourses = safeStorageRead('cd_custom_courses', []);
+  
+  let addedCount = 0;
+  const newCustom = [...customCourses];
+  
+  for (const c of coursesList) {
+    if (!c.title) continue;
+    const id = c._id || 'c_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+    const slug = c.slug || c.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    
+    const formatted = {
+      _id: id,
+      slug,
+      title: c.title,
+      subtitle: c.subtitle || '',
+      category: c.category || 'Software & Web Development',
+      level: c.level || 'Beginner to Advanced',
+      duration: c.duration || '60 Hours (8 Weeks)',
+      price: Number(c.price) || 499,
+      discountPrice: Number(c.discountPrice) || (Number(c.price) ? Math.round(Number(c.price) * 0.8) : 399),
+      rating: Number(c.rating) || 4.9,
+      numReviews: Number(c.numReviews) || 150,
+      description: c.description || c.overview || 'Industry certified training program with live mentorship and guaranteed internship assistance.',
+      overview: c.overview || c.description || '',
+      thumbnail: c.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+      syllabusPdf: c.syllabusPdf || '',
+      isPublished: true,
+      isFeatured: c.isFeatured || false,
+      isPopular: c.isPopular !== undefined ? c.isPopular : true
+    };
+    
+    const existIdx = newCustom.findIndex(item => item._id === id || item.slug === slug);
+    if (existIdx >= 0) {
+      newCustom[existIdx] = formatted;
+    } else {
+      newCustom.unshift(formatted);
+    }
+    addedCount++;
+  }
+  
+  localStorage.setItem('cd_custom_courses', JSON.stringify(newCustom));
+  
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cd_courses_updated', { detail: { bulk: true, count: addedCount } }));
+  }
+  
+  return addedCount;
+};
+
 export default api;

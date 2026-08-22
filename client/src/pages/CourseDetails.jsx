@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import logoImg from '../assets/logo.png';
-import api, { fallbackStore } from '../services/api';
+import api, { fallbackStore, getLiveCourses, getLiveCourseBySlug } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
 import CourseCard from '../components/CourseCard';
@@ -58,11 +58,15 @@ const CourseDetails = () => {
   });
   const [isSubmittingUnlock, setIsSubmittingUnlock] = useState(false);
 
-
-
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchCourseDetails();
+
+    const handleUpdate = () => {
+      fetchCourseDetails();
+    };
+    window.addEventListener('cd_courses_updated', handleUpdate);
+    return () => window.removeEventListener('cd_courses_updated', handleUpdate);
   }, [slug]);
 
   const fetchCourseDetails = async () => {
@@ -73,15 +77,16 @@ const CourseDetails = () => {
         setCourse(res.data.data);
         setRelatedCourses(res.data.relatedCourses || []);
       } else {
-        // Fallback store search
-        const found = fallbackStore.courses.find(c => c.slug === slug) || fallbackStore.courses[0];
+        const found = getLiveCourseBySlug(slug);
         setCourse(found);
-        setRelatedCourses(fallbackStore.courses.filter(c => c._id !== found._id).slice(0, 3));
+        const allLive = getLiveCourses();
+        setRelatedCourses(allLive.filter(c => c._id !== found?._id).slice(0, 3));
       }
     } catch (err) {
-      const found = fallbackStore.courses.find(c => c.slug === slug) || fallbackStore.courses[0];
+      const found = getLiveCourseBySlug(slug);
       setCourse(found);
-      setRelatedCourses(fallbackStore.courses.filter(c => c._id !== found._id).slice(0, 3));
+      const allLive = getLiveCourses();
+      setRelatedCourses(allLive.filter(c => c._id !== found?._id).slice(0, 3));
     } finally {
       setLoading(false);
     }
@@ -113,6 +118,20 @@ const CourseDetails = () => {
   };
 
   const downloadHandout = () => {
+    // If Admin uploaded an official PDF syllabus file or URL
+    if (course?.syllabusPdf) {
+      const link = document.createElement('a');
+      link.href = course.syllabusPdf;
+      link.download = `${(course.title || 'Course_Divine').replace(/[^a-zA-Z0-9]/g, '_')}_Official_Syllabus.pdf`;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Downloading official syllabus PDF...', 'success');
+      return;
+    }
+
     const syllabusText = course?.curriculum
       ?.map(
         (m, i) =>
@@ -158,11 +177,10 @@ Company: Course Divine Technology Pvt. Ltd.
 Address: Office No-3/23, Petrol Bunk, Land Mark Railway Station, near HP, near Simhachalam, Nad Junction, Gopalapatnam, Simhachalam, Visakhapatnam, Andhra Pradesh 530027
 Email: coursedivine@gmail.com
 Phone: +91 91003 48679
-Official Portal: https://akasheswar7.github.io/coursedivinewebsite/
+Official Portal: https://www.learncoursedivine.com/
 
 =====================================================
 `;
-
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -173,6 +191,7 @@ Official Portal: https://akasheswar7.github.io/coursedivinewebsite/
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    showToast('Course brochure and syllabus downloaded!', 'success');
   };
 
   const handleUnlockSubmit = async (e) => {

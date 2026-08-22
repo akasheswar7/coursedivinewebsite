@@ -49,7 +49,7 @@ import {
   Sliders,
   Workflow
 } from 'lucide-react';
-import api, { fallbackStore } from '../services/api';
+import api, { fallbackStore, getLiveCourses } from '../services/api';
 import { useNotification } from '../context/NotificationContext';
 import CourseCard from '../components/CourseCard';
 import EnrollmentModal from '../components/EnrollmentModal';
@@ -79,10 +79,10 @@ const AnimatedCounter = ({ target, duration = 6500, suffix = '', decimals = 0 })
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       // Very smooth, luxurious cubic ease-out
-      const easeProgress = 1 - Math.pow(1 - progress, 2.5);
-      const currentVal = easeProgress * end;
+      const easeProgress = 1 - Math.pow(1 - progress, 4);
+      const current = easeProgress * end;
 
-      setCount(currentVal);
+      setCount(current);
 
       if (progress < 1) {
         requestAnimationFrame(updateCount);
@@ -104,7 +104,7 @@ const AnimatedCounter = ({ target, duration = 6500, suffix = '', decimals = 0 })
 const Home = () => {
   const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
-  const [courses, setCourses] = useState(fallbackStore.courses);
+  const [courses, setCourses] = useState(() => getLiveCourses());
   const { showToast } = useNotification();
 
   const [enrollingCourse, setEnrollingCourse] = useState(null);
@@ -148,6 +148,12 @@ const Home = () => {
   };
 
   useEffect(() => {
+    const syncCourses = () => {
+      setCourses(getLiveCourses());
+    };
+
+    syncCourses();
+
     api.get('/courses?limit=12')
       .then((res) => {
         if (res.data?.success && res.data.data.length > 0) {
@@ -155,8 +161,11 @@ const Home = () => {
         }
       })
       .catch(() => {
-        setCourses(fallbackStore.courses);
+        setCourses(getLiveCourses());
       });
+
+    window.addEventListener('cd_courses_updated', syncCourses);
+    return () => window.removeEventListener('cd_courses_updated', syncCourses);
   }, []);
 
   const handleSendMessage = (e) => {
