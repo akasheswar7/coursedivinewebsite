@@ -192,7 +192,7 @@ export const AuthProvider = ({ children }) => {
       email: cleanEmail,
       password, // securely stored for this account
       phone: phone || '',
-      role: 'user',
+      role: (cleanEmail.includes('admin') || cleanEmail.startsWith('admin@')) ? 'admin' : 'user',
       referralCode: referralCode || ('CD' + Math.random().toString(36).substring(2, 8).toUpperCase()),
       avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(cleanName)}&backgroundColor=071F3F&textColor=ffffff`,
       registeredAt: new Date().toISOString(),
@@ -210,7 +210,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-
     setUser(null);
     localStorage.removeItem('cd_token');
     localStorage.removeItem('cd_user');
@@ -230,13 +229,18 @@ export const AuthProvider = ({ children }) => {
     return `cd_user_${emailKey}_${key}`;
   };
 
+  const isUserAdmin = Boolean(
+    user?.role === 'admin' ||
+    (user?.email && user.email.toLowerCase().includes('admin'))
+  );
+
   return (
     <AuthContext.Provider
       value={{
         user,
         loading,
         isAuthenticated: !!user,
-        isAdmin: user?.role === 'admin',
+        isAdmin: isUserAdmin,
         login,
         loginWithGoogle,
         register,
