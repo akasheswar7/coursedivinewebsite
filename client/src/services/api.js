@@ -1555,25 +1555,16 @@ const safeStorageRead = (key, fallback) => {
   }
 };
 
-// Unified Synchronized Course Store Manager
+// Clear demo courses so Admin starts with a fresh empty catalog
+fallbackStore.courses = [];
+
+// Unified Synchronized Course Store Manager (Clean state - only Admin added courses)
 export const getLiveCourses = () => {
   const customCourses = safeStorageRead('cd_custom_courses', []);
   const deletedIds = safeStorageRead('cd_deleted_course_ids', []);
   
-  // Combine base seed courses + custom added/edited courses
-  const baseCourses = fallbackStore.courses.filter(c => !deletedIds.includes(c._id) && !deletedIds.includes(c.slug));
-  
-  // Custom courses take precedence or get appended
-  const customFiltered = customCourses.filter(c => !deletedIds.includes(c._id) && !deletedIds.includes(c.slug));
-  
-  // Merge by replacing if ID exists, or prepending
-  const mergedMap = new Map();
-  // Insert base courses
-  baseCourses.forEach(c => mergedMap.set(c._id, c));
-  // Override or insert custom courses
-  customFiltered.forEach(c => mergedMap.set(c._id, c));
-  
-  return Array.from(mergedMap.values());
+  // Return only live custom courses added by admin
+  return customCourses.filter(c => !deletedIds.includes(c._id) && !deletedIds.includes(c.slug));
 };
 
 export const getLiveCourseBySlug = (slug) => {
